@@ -1,0 +1,2706 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Библиотека кондитера — с Дашей</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ========== RESET & ПЕРЕМЕННЫЕ ========== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --pink:        #D4537E;
+            --pink-light:  #E8799E;
+            --pink-dark:   #B8426A;
+            --bg:          #FAF7F4;
+            --accent:      #FBEAF0;
+            --accent-dark: #F2D5E2;
+            --text:        #2D1F2E;
+            --text-mid:    #6B5060;
+            --text-light:  #A08090;
+            --white:       #FFFFFF;
+            --shadow:      0 4px 24px rgba(212,83,126,.08);
+            --shadow-hov:  0 10px 36px rgba(212,83,126,.16);
+            --r:           16px;
+            --r-sm:        8px;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            line-height: 1.2;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* ========== НАВБАР ========== */
+        .navbar {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            background: rgba(250,247,244,.94);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--accent-dark);
+            transition: box-shadow .3s;
+        }
+
+        .navbar.scrolled { box-shadow: 0 2px 20px rgba(212,83,126,.10); }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            height: 64px;
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--pink);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .nav-logo em { font-style: italic; font-weight: 300; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex: 1;
+        }
+
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-link {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-mid);
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+            transition: all .2s;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--pink);
+            background: var(--accent);
+        }
+
+        /* Гамбургер */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all .3s;
+        }
+
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: 12px 24px 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,.10);
+            z-index: 199;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .mobile-menu.open { display: flex; }
+        .mobile-menu .nav-link { font-size: 15px; padding: 11px 16px; border-radius: var(--r-sm); }
+
+
+        /* ========== ГЕРОЙ ========== */
+        .hero {
+            padding: 130px 24px 90px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -120px; right: -200px;
+            width: 640px; height: 640px;
+            background: radial-gradient(circle, rgba(251,234,240,.85) 0%, transparent 68%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: -160px;
+            width: 460px; height: 460px;
+            background: radial-gradient(circle, rgba(212,83,126,.07) 0%, transparent 68%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 680px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Анимации героя — fadeUp последовательно */
+        .hero-inner > * {
+            opacity: 0;
+            animation: fadeUp .7s cubic-bezier(.4,0,.2,1) forwards;
+        }
+
+        .hero-inner > *:nth-child(1) { animation-delay: .10s; }
+        .hero-inner > *:nth-child(2) { animation-delay: .22s; }
+        .hero-inner > *:nth-child(3) { animation-delay: .34s; }
+        .hero-inner > *:nth-child(4) { animation-delay: .46s; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent);
+            color: var(--pink);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            letter-spacing: .02em;
+        }
+
+        .hero-badge::before { content: '✦'; font-size: 9px; }
+
+        .hero h1 {
+            font-size: clamp(44px, 8vw, 76px);
+            font-weight: 600;
+            margin-bottom: 6px;
+            letter-spacing: -.01em;
+        }
+
+        .hero h1 em { font-style: italic; color: var(--pink); }
+
+        .hero-sub {
+            font-size: 16px;
+            color: var(--text-mid);
+            margin-bottom: 52px;
+            font-weight: 400;
+            line-height: 1.75;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            flex-wrap: wrap;
+        }
+
+        .stat-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 54px;
+            font-weight: 600;
+            color: var(--pink);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-lbl {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+            letter-spacing: .03em;
+        }
+
+
+        /* ========== ОБЩИЕ УТИЛИТЫ ========== */
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .block-header { text-align: center; margin-bottom: 48px; }
+
+        .block-header h2 {
+            font-size: clamp(30px, 5vw, 46px);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .block-header p { font-size: 15px; color: var(--text-light); }
+
+        .divider {
+            height: 1px;
+            background: var(--accent-dark);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Анимация появления карточек через IntersectionObserver */
+        .anim {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity .55s cubic-bezier(.4,0,.2,1), transform .55s cubic-bezier(.4,0,.2,1);
+        }
+
+        .anim.in { opacity: 1; transform: none; }
+
+
+        /* ========== СЕТКА РАЗДЕЛОВ ========== */
+        .sections-block { padding: 80px 24px; }
+
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 16px;
+        }
+
+        .sec-card {
+            background: var(--white);
+            border-radius: var(--r);
+            padding: 26px 22px;
+            cursor: pointer;
+            border: 1.5px solid transparent;
+            box-shadow: var(--shadow);
+            transition: transform .3s, box-shadow .3s, border-color .3s, background .3s;
+        }
+
+        .sec-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hov);
+            border-color: var(--accent-dark);
+        }
+
+        .sec-card.active {
+            border-color: var(--pink);
+            background: var(--accent);
+        }
+
+        .sec-icon {
+            width: 48px; height: 48px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 14px;
+            color: var(--pink);
+            font-weight: 700;
+            transition: background .25s, color .25s;
+        }
+
+        .sec-card:hover .sec-icon,
+        .sec-card.active .sec-icon {
+            background: var(--pink);
+            color: var(--white);
+        }
+
+        .sec-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .sec-desc {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .sec-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--pink);
+            background: var(--accent);
+            padding: 3px 10px;
+            border-radius: 20px;
+        }
+
+
+        /* ========== ОТКРЫТЫЙ РАЗДЕЛ «СТАРТ» ========== */
+        .open-section {
+            padding: 80px 24px;
+            background: var(--white);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 36px;
+        }
+
+        .breadcrumb .cur { color: var(--pink); font-weight: 600; }
+
+        .start-layout {
+            display: grid;
+            grid-template-columns: 230px 1fr;
+            gap: 36px;
+            align-items: start;
+        }
+
+        /* Боковое меню */
+        .sidebar {
+            position: sticky;
+            top: 80px;
+        }
+
+        .sidebar-head {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--accent-dark);
+            margin-bottom: 14px;
+        }
+
+        .topic-list { display: flex; flex-direction: column; gap: 3px; }
+
+        .topic-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 13px;
+            border-radius: var(--r-sm);
+            font-size: 14px;
+            color: var(--text-mid);
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .topic-item:hover { background: var(--accent); color: var(--pink); }
+
+        .topic-item.active {
+            background: var(--pink);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .topic-cnt {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 10px;
+            background: var(--accent-dark);
+            color: var(--text-light);
+        }
+
+        .topic-item.active .topic-cnt {
+            background: rgba(255,255,255,.25);
+            color: var(--white);
+        }
+
+        /* Область контента */
+        .content-head { margin-bottom: 28px; }
+
+        .content-head h2 { font-size: 34px; font-weight: 500; margin-bottom: 6px; }
+        .content-head p  { font-size: 15px; color: var(--text-mid); }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 18px;
+        }
+
+        /* Карточка контента */
+        .c-card {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 22px;
+            border: 1.5px solid var(--accent-dark);
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+        }
+
+        .c-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: var(--pink-light);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 13px;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .badge-guide    { background: #EBF3FC; color: #2E6DB4; }
+        .badge-video    { background: #EBF7EC; color: #2E7D32; }
+        .badge-checklist{ background: #FBEAF0; color: #D4537E; }
+        .badge-template { background: #FEF3E2; color: #B7710A; }
+
+        .c-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 7px;
+            line-height: 1.3;
+        }
+
+        .c-desc {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .c-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .c-meta { font-size: 12px; color: var(--text-light); }
+
+        .c-btn {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--pink);
+            padding: 6px 13px;
+            border-radius: 20px;
+            border: 1.5px solid var(--pink);
+            background: transparent;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            transition: all .2s;
+        }
+
+        .c-btn:hover { background: var(--pink); color: var(--white); }
+
+
+        /* ========== БОНУСЫ ========== */
+        .bonuses { padding: 80px 24px; }
+
+        .bonuses-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-top: 48px;
+        }
+
+        .b-card {
+            background: var(--white);
+            border-radius: var(--r);
+            padding: 34px 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .b-card.featured {
+            background: linear-gradient(135deg, #D4537E 0%, #B8426A 100%);
+            color: var(--white);
+            grid-column: 1 / -1;
+        }
+
+        .b-icon { font-size: 36px; margin-bottom: 14px; }
+
+        .b-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .b-card > p {
+            font-size: 14px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin-bottom: 22px;
+        }
+
+        .b-card.featured > p { color: rgba(255,255,255,.8); }
+
+        /* Калькулятор */
+        .calculator {
+            background: var(--bg);
+            border-radius: var(--r-sm);
+            padding: 18px 16px;
+            margin-top: 4px;
+        }
+
+        .calc-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .calc-row label { font-size: 13px; color: var(--text-mid); flex: 1; font-weight: 500; }
+
+        .calc-row input {
+            width: 100px;
+            padding: 7px 10px;
+            border: 1.5px solid var(--accent-dark);
+            border-radius: 7px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 13px;
+            color: var(--text);
+            background: var(--white);
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .calc-row input:focus { border-color: var(--pink); }
+        .calc-row span { font-size: 12px; color: var(--text-light); width: 26px; }
+
+        .calc-result {
+            background: var(--white);
+            border-radius: var(--r-sm);
+            padding: 12px 16px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .calc-lbl { font-size: 13px; color: var(--text-mid); font-weight: 500; }
+
+        .calc-val {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--pink);
+        }
+
+        /* Шпаргалки */
+        .sheets-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .sheet-item {
+            background: var(--accent);
+            border-radius: var(--r-sm);
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--text-mid);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sheet-item::before { content: '✓'; color: var(--pink); font-weight: 700; }
+
+        /* Кнопки */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 24px;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .btn-pink  { background: var(--pink); color: var(--white); }
+        .btn-pink:hover  { background: var(--pink-dark); transform: translateY(-1px); }
+
+        .btn-outline-white {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255,255,255,.5);
+        }
+
+        .btn-outline-white:hover { border-color: var(--white); background: rgba(255,255,255,.12); }
+
+
+        /* ========== ФУТЕР ========== */
+        .footer {
+            background: #1E1320;
+            color: rgba(255,255,255,.65);
+            padding: 60px 24px 40px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+
+        .footer-logo em { font-style: italic; color: var(--pink-light); }
+
+        .footer-brand p {
+            font-size: 14px;
+            line-height: 1.7;
+            max-width: 270px;
+        }
+
+        .footer-col h4 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--white);
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+
+        .footer-col ul li a {
+            font-size: 14px;
+            color: rgba(255,255,255,.55);
+            transition: color .2s;
+        }
+
+        .footer-col ul li a:hover { color: var(--pink-light); }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255,255,255,.08);
+            padding-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .footer-bottom .heart { color: var(--pink-light); }
+
+        .insta-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--pink-light);
+            font-weight: 600;
+            transition: opacity .2s;
+        }
+
+        .insta-link:hover { opacity: .75; }
+
+
+        /* ========== АДАПТИВ ========== */
+        @media (max-width: 900px) {
+            .start-layout    { grid-template-columns: 1fr; }
+            .sidebar         { position: static; }
+            .topic-list      { flex-direction: row; flex-wrap: wrap; }
+            .bonuses-grid    { grid-template-columns: 1fr; }
+            .b-card.featured { grid-column: 1; }
+            .footer-top      { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .nav-links       { display: none; }
+            .hamburger       { display: flex; }
+            .hero            { padding: 100px 20px 60px; }
+            .hero-stats      { gap: 24px; }
+            .sections-grid   { grid-template-columns: repeat(2, 1fr); }
+            .content-grid    { grid-template-columns: 1fr; }
+            .sheets-grid     { grid-template-columns: 1fr; }
+            .footer-top      { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom   { flex-direction: column; text-align: center; }
+            .b-card          { padding: 26px 20px; }
+        }
+
+        @media (max-width: 380px) {
+            .sections-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ========== ПАПКА-МОДАЛКА ========== */
+        .folder-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: rgba(30, 19, 32, .52);
+            backdrop-filter: blur(7px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 0 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .35s cubic-bezier(.4,0,.2,1);
+        }
+
+        .folder-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Обёртка — вся папка */
+        .folder-wrap {
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(70px) scale(.96);
+            transition: transform .5s cubic-bezier(.22,1,.36,1);
+        }
+
+        .folder-overlay.open .folder-wrap {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Строка над телом: вкладка + кнопка закрыть */
+        .folder-top {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding-right: 6px;
+        }
+
+        /* Вкладка — торчит вверх как у папки */
+        .folder-tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--white);
+            border: 1.5px solid var(--accent-dark);
+            border-bottom: none;
+            border-radius: 14px 14px 0 0;
+            padding: 10px 22px 16px;
+            position: relative;
+            z-index: 1;
+            max-width: calc(100% - 56px);
+            overflow: hidden;
+        }
+
+        /* Цветная полоска сверху вкладки */
+        .folder-tab::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--pink);
+            border-radius: 14px 14px 0 0;
+        }
+
+        .folder-tab-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .folder-tab-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Кнопка закрытия */
+        .folder-close {
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            border: 1.5px solid var(--accent-dark);
+            background: var(--white);
+            color: var(--text-mid);
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all .2s;
+            flex-shrink: 0;
+            margin-bottom: 4px;
+            font-family: 'Manrope', sans-serif;
+            line-height: 1;
+        }
+
+        .folder-close:hover {
+            background: var(--pink);
+            color: var(--white);
+            border-color: var(--pink);
+            transform: rotate(90deg);
+        }
+
+        /* Тело папки */
+        .folder-body {
+            flex: 1;
+            background: var(--white);
+            border: 1.5px solid var(--accent-dark);
+            border-radius: 0 16px 0 0;
+            overflow-y: auto;
+            padding: 44px 52px 60px;
+            position: relative;
+            z-index: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-dark) transparent;
+        }
+
+        .folder-body::-webkit-scrollbar { width: 5px; }
+        .folder-body::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 4px; }
+        .folder-body::-webkit-scrollbar-thumb:hover { background: var(--pink-light); }
+
+        /* ── Типографика контента внутри папки ── */
+        .folder-content h2 {
+            font-size: 36px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .folder-content .g-meta {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 28px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .folder-content .g-lead {
+            font-size: 15px;
+            color: var(--text-mid);
+            line-height: 1.8;
+            margin-bottom: 32px;
+            padding: 18px 22px;
+            background: var(--accent);
+            border-radius: var(--r-sm);
+            border-left: 3px solid var(--pink);
+        }
+
+        .folder-content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 32px 0 10px;
+        }
+
+        .folder-content p {
+            font-size: 14px;
+            color: var(--text-mid);
+            line-height: 1.78;
+            margin-bottom: 12px;
+        }
+
+        .folder-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .folder-content ul li {
+            font-size: 14px;
+            color: var(--text-mid);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.65;
+        }
+
+        .folder-content ul li::before {
+            content: '✦';
+            color: var(--pink);
+            font-size: 9px;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .folder-content .g-tip {
+            background: #EBF3FC;
+            border-radius: var(--r-sm);
+            padding: 14px 18px;
+            font-size: 13px;
+            color: #2E6DB4;
+            line-height: 1.7;
+            margin: 18px 0;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .folder-content .g-tip-icon { flex-shrink: 0; font-size: 16px; }
+
+        .folder-content .g-divider {
+            height: 1px;
+            background: var(--accent-dark);
+            margin: 28px 0;
+        }
+
+        @media (max-width: 640px) {
+            .folder-overlay  { padding: 0 8px; }
+            .folder-body     { padding: 24px 20px 40px; }
+            .folder-tab-title{ font-size: 13px; }
+            .folder-content h2 { font-size: 26px; }
+            .folder-content h3 { font-size: 20px; }
+        }
+
+        /* ========== БАННЕР ========== */
+        .announce-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 201;
+            background: var(--accent);
+            border-bottom: 1px solid var(--accent-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 52px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .announce-close {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-mid);
+            width: 28px; height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background .2s;
+            font-family: 'Manrope', sans-serif;
+            line-height: 1;
+        }
+
+        .announce-close:hover { background: var(--accent-dark); }
+
+
+        /* ========== БЛОК «С ЧЕГО НАЧАТЬ» ========== */
+        .start-guide { padding: 80px 24px; }
+
+        .start-guide-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .sg-card {
+            background: var(--white);
+            border-radius: var(--r);
+            border: 1.5px solid var(--accent-dark);
+            padding: 32px 28px;
+            cursor: pointer;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+        }
+
+        .sg-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hov);
+            border-color: var(--pink);
+        }
+
+        .sg-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 64px;
+            font-weight: 600;
+            color: var(--pink);
+            opacity: .18;
+            line-height: 1;
+            margin-bottom: 6px;
+            transition: opacity .3s;
+        }
+
+        .sg-card:hover .sg-num { opacity: .4; }
+
+        .sg-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            margin-bottom: 13px;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .sg-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .sg-card p {
+            font-size: 14px;
+            color: var(--text-mid);
+            line-height: 1.65;
+        }
+
+        @media (max-width: 768px) {
+            .start-guide-grid { grid-template-columns: 1fr; }
+        }
+
+
+        /* ========== БЛОК «НОВОЕ В БИБЛИОТЕКЕ» ========== */
+        .new-in-lib {
+            padding: 80px 24px;
+            background: var(--white);
+        }
+
+        .nil-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .nil-card {
+            background: var(--bg);
+            border-radius: var(--r);
+            border: 1.5px solid var(--accent-dark);
+            padding: 24px 20px;
+            min-height: 170px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nil-soon {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-light);
+            background: var(--accent-dark);
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .nil-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin: 14px 0 auto;
+            line-height: 1.35;
+        }
+
+        .nil-date {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 16px;
+        }
+
+        .nil-progress-block {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 22px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nil-progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-mid);
+            font-weight: 500;
+        }
+
+        .nil-progress-pct {
+            color: var(--pink);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .nil-bar {
+            height: 8px;
+            background: var(--accent-dark);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .nil-bar-fill {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--pink-dark), var(--pink-light));
+            border-radius: 20px;
+            transition: width 1.2s cubic-bezier(.4,0,.2,1);
+        }
+
+        @media (max-width: 900px) { .nil-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { .nil-grid { grid-template-columns: 1fr; } }
+
+
+        /* ========== СТРАНИЦА РАЗДЕЛА (инвентарь и др.) ========== */
+        .inv-section { background: var(--white); }
+
+        .inv-hero {
+            padding: 72px 24px 60px;
+            border-bottom: 1px solid var(--accent-dark);
+        }
+
+        .inv-hero .breadcrumb { margin-bottom: 28px; }
+
+        .inv-hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(44px, 7vw, 72px);
+            font-weight: 600;
+            letter-spacing: -.01em;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .inv-hero-desc {
+            font-size: 16px;
+            color: var(--text-mid);
+            line-height: 1.75;
+            max-width: 620px;
+            margin-bottom: 32px;
+        }
+
+        .inv-hero-badges {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .inv-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--accent);
+            color: var(--pink);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 20px;
+        }
+
+        .inv-topics {
+            padding: 56px 24px 80px;
+        }
+
+        .inv-topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+
+        /* ========== ВИДЕО-СТРАНИЦА (slide-in) ========== */
+        #mainWrap {
+            transition: transform 0.35s ease-in-out;
+            will-change: transform;
+        }
+
+        #mainWrap.slide-left {
+            transform: translateX(-60px);
+            pointer-events: none;
+        }
+
+        #videoPage {
+            position: fixed;
+            inset: 0;
+            z-index: 350;
+            background: var(--bg);
+            transform: translateX(100%);
+            transition: transform 0.35s ease-in-out;
+            will-change: transform;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-dark) transparent;
+        }
+
+        #videoPage.open { transform: translateX(0); }
+
+        #videoPage::-webkit-scrollbar { width: 5px; }
+        #videoPage::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 4px; }
+
+        #inventoryPage {
+            position: fixed;
+            inset: 0;
+            z-index: 350;
+            background: var(--bg);
+            transform: translateX(100%);
+            transition: transform 0.35s ease-in-out;
+            will-change: transform;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-dark) transparent;
+        }
+
+        #inventoryPage.open { transform: translateX(0); }
+        #inventoryPage::-webkit-scrollbar { width: 5px; }
+        #inventoryPage::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 4px; }
+
+        .vp-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: rgba(250,247,244,.94);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--accent-dark);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .vp-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-mid);
+            background: none;
+            border: 1.5px solid var(--accent-dark);
+            cursor: pointer;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-family: 'Manrope', sans-serif;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .vp-back:hover { background: var(--accent); color: var(--pink); border-color: var(--pink); }
+
+        .vp-header-crumb {
+            font-size: 13px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .vp-header-crumb .cur { color: var(--pink); font-weight: 600; }
+
+        .vp-body {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 52px 24px 80px;
+        }
+
+        .vp-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.15;
+            margin-bottom: 36px;
+        }
+
+        .vp-player {
+            background: #1A1020;
+            border-radius: var(--r);
+            aspect-ratio: 16 / 9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 28px;
+            cursor: pointer;
+        }
+
+        .vp-play-icon {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.10);
+            border: 2px solid rgba(255,255,255,.22);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--white);
+            padding-left: 4px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .vp-player:hover .vp-play-icon {
+            background: rgba(212,83,126,.45);
+            border-color: var(--pink-light);
+        }
+
+        .vp-player-label {
+            font-size: 14px;
+            color: rgba(255,255,255,.40);
+            font-weight: 500;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .vp-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 48px;
+        }
+
+        .vp-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--white);
+            border: 1.5px solid var(--accent-dark);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: var(--text-mid);
+            font-weight: 500;
+        }
+
+        .vp-h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .vp-points {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 48px;
+        }
+
+        .vp-points li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            padding: 14px 20px;
+            background: var(--white);
+            border-radius: var(--r-sm);
+            border: 1.5px solid var(--accent-dark);
+        }
+
+        .vp-points li::before {
+            content: '✦';
+            color: var(--pink);
+            font-size: 9px;
+            flex-shrink: 0;
+            margin-top: 7px;
+        }
+
+        .vp-konspekt {
+            background: var(--white);
+            border-radius: var(--r);
+            border: 1.5px solid var(--accent-dark);
+            padding: 28px 30px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .vp-konspekt-icon { font-size: 32px; flex-shrink: 0; }
+
+        .vp-konspekt-text { font-size: 14px; color: var(--text-light); line-height: 1.7; }
+
+        @media (max-width: 640px) {
+            .vp-header-crumb { display: none; }
+            .vp-body { padding: 36px 16px 60px; }
+        }
+
+
+        /* ========== PDF-РЕЖИМ (картинка) ========== */
+        .folder-overlay.pdf-mode .folder-wrap {
+            max-width: min(900px, 95vw);
+        }
+
+        .folder-overlay.pdf-mode .folder-body {
+            padding: 20px 24px 40px;
+        }
+    </style>
+</head>
+<body>
+<div id="mainWrap">
+
+<!-- ========== НАВБАР ========== -->
+<nav class="navbar" id="navbar">
+    <div class="nav-inner">
+        <div class="nav-logo">Библиотека <em>кондитера</em></div>
+        <div class="nav-links">
+            <a class="nav-link" href="#start">Старт</a>
+            <a class="nav-link" href="#inventory">Инвентарь</a>
+            <a class="nav-link" href="#ingredients">Ингредиенты</a>
+            <a class="nav-link" href="#techniques">Техники</a>
+            <a class="nav-link" href="#biscuits">Бисквиты</a>
+            <a class="nav-link" href="#creams">Кремы</a>
+            <a class="nav-link" href="#assembly">Сборка</a>
+            <a class="nav-link" href="#decor">Декор</a>
+            <a class="nav-link" href="#prices">Цены</a>
+            <a class="nav-link" href="#clients">Клиенты</a>
+            <a class="nav-link" href="#documents">Документы</a>
+            <a class="nav-link" href="#instagram">Instagram</a>
+            <a class="nav-link" href="#templates">Шаблоны</a>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+</nav>
+
+<!-- Мобильное меню -->
+<div class="mobile-menu" id="mobileMenu">
+    <a class="nav-link" href="#start">Старт</a>
+    <a class="nav-link" href="#inventory">Инвентарь</a>
+    <a class="nav-link" href="#ingredients">Ингредиенты</a>
+    <a class="nav-link" href="#techniques">Техники</a>
+    <a class="nav-link" href="#biscuits">Бисквиты</a>
+    <a class="nav-link" href="#creams">Кремы</a>
+    <a class="nav-link" href="#assembly">Сборка</a>
+    <a class="nav-link" href="#decor">Декор</a>
+    <a class="nav-link" href="#prices">Цены</a>
+    <a class="nav-link" href="#clients">Клиенты</a>
+    <a class="nav-link" href="#documents">Документы</a>
+    <a class="nav-link" href="#instagram">Instagram</a>
+    <a class="nav-link" href="#templates">Шаблоны</a>
+</div>
+
+
+<!-- ========== БАННЕР ========== -->
+<div class="announce-bar" id="announceBar">
+    🎉 Цена запуска 1500₽ действует до 10 июня — потом 3500₽
+    <button class="announce-close" id="announceClose" aria-label="Закрыть">×</button>
+</div>
+
+
+<!-- ========== ГЕРОЙ ========== -->
+<section class="hero" id="hero">
+    <div class="hero-inner">
+        <div class="hero-badge">Образовательная платформа от Даши · 5 лет опыта</div>
+        <h1>Библиотека<br><em>кондитера</em></h1>
+        <p class="hero-sub">Всё, что нужно начинающему кондитеру — собрано в одном месте. Гайды, видео, шаблоны и чеклисты от практика с опытом и 10 000+ подписчиков.</p>
+        <div class="hero-stats">
+            <div>
+                <div class="stat-num">13</div>
+                <div class="stat-lbl">разделов</div>
+            </div>
+            <div>
+                <div class="stat-num">130+</div>
+                <div class="stat-lbl">тем</div>
+            </div>
+            <div>
+                <div class="stat-num">10+</div>
+                <div class="stat-lbl">шаблонов</div>
+            </div>
+            <div>
+                <div class="stat-num">10к</div>
+                <div class="stat-lbl">подписчиков</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ========== С ЧЕГО НАЧАТЬ ========== -->
+<section class="start-guide">
+    <div class="container">
+        <div class="block-header anim">
+            <h2>Первый раз здесь?</h2>
+            <p>Начни с этих трёх материалов</p>
+        </div>
+        <div class="start-guide-grid">
+            <div class="sg-card anim">
+                <div class="sg-num">01</div>
+                <div class="sg-badge badge-guide">📖 Гайд</div>
+                <h3>Реалистичные ожидания</h3>
+                <p>Сколько времени реально нужно до первого заказа — без розовых очков</p>
+            </div>
+            <div class="sg-card anim" style="transition-delay:.08s">
+                <div class="sg-num">02</div>
+                <div class="sg-badge badge-guide">📖 Гайд</div>
+                <h3>Базовый набор до 5000₽</h3>
+                <p>Что купить на старте чтобы не слить деньги на ненужное</p>
+            </div>
+            <div class="sg-card anim" style="transition-delay:.16s">
+                <div class="sg-num">03</div>
+                <div class="sg-badge badge-guide">📖 Гайд + Шаблон</div>
+                <h3>Как считать себестоимость</h3>
+                <p>Формула которой я пользуюсь сама — чтобы не работать в минус</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ========== СЕТКА ВСЕХ РАЗДЕЛОВ ========== -->
+<section class="sections-block" id="sections">
+    <div class="container">
+        <div class="block-header">
+            <h2>Все разделы библиотеки</h2>
+            <p>Выбери нужный раздел и изучай в своём темпе</p>
+        </div>
+        <div class="sections-grid" id="sectionsGrid">
+            <!-- Карточки вставляются через JS -->
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ========== ОТКРЫТЫЙ РАЗДЕЛ «СТАРТ» ========== -->
+<section class="open-section" id="start">
+    <div class="container">
+        <div class="breadcrumb">
+            <span>Библиотека</span>
+            <span>→</span>
+            <span class="cur">Старт</span>
+        </div>
+
+        <div class="start-layout">
+
+            <!-- Боковое меню -->
+            <aside class="sidebar">
+                <div class="sidebar-head">✦ Старт</div>
+                <div class="topic-list">
+                    <div class="topic-item active" data-topic="basics">
+                        <span>Основы профессии</span>
+                        <span class="topic-cnt">3</span>
+                    </div>
+                    <div class="topic-item" data-topic="first-cake">
+                        <span>Первый торт</span>
+                        <span class="topic-cnt">2</span>
+                    </div>
+                    <div class="topic-item" data-topic="workspace">
+                        <span>Рабочее место</span>
+                        <span class="topic-cnt">2</span>
+                    </div>
+                    <div class="topic-item" data-topic="mistakes">
+                        <span>Ошибки новичков</span>
+                        <span class="topic-cnt">3</span>
+                    </div>
+                    <div class="topic-item" data-topic="learning">
+                        <span>Как учиться</span>
+                        <span class="topic-cnt">2</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Контент -->
+            <div>
+                <div class="content-head">
+                    <h2 id="contentTitle">Основы профессии</h2>
+                    <p  id="contentDesc">С чего начать, что изучить в первую очередь и как не потеряться</p>
+                </div>
+                <div class="content-grid" id="contentGrid">
+                    <!-- Карточки вставляются через JS -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ========== НОВОЕ В БИБЛИОТЕКЕ ========== -->
+<section class="new-in-lib">
+    <div class="container">
+        <div class="block-header anim">
+            <h2>Недавно добавлено</h2>
+            <p>Библиотека пополняется каждую неделю</p>
+        </div>
+        <div class="nil-grid">
+            <div class="nil-card anim">
+                <span class="nil-soon">⏳ Скоро</span>
+                <div class="nil-title">Шоколадный ганаш: пять базовых пропорций</div>
+                <div class="nil-date">Май 2026</div>
+            </div>
+            <div class="nil-card anim" style="transition-delay:.06s">
+                <span class="nil-soon">⏳ Скоро</span>
+                <div class="nil-title">Как фотографировать торты на телефон</div>
+                <div class="nil-date">Май 2026</div>
+            </div>
+            <div class="nil-card anim" style="transition-delay:.12s">
+                <span class="nil-soon">⏳ Скоро</span>
+                <div class="nil-title">Шаблон договора с клиентом</div>
+                <div class="nil-date">Май 2026</div>
+            </div>
+            <div class="nil-card anim" style="transition-delay:.18s">
+                <span class="nil-soon">⏳ Скоро</span>
+                <div class="nil-title">Велюровое покрытие: первые шаги</div>
+                <div class="nil-date">Май 2026</div>
+            </div>
+        </div>
+        <div class="nil-progress-block anim">
+            <div class="nil-progress-label">
+                <span>Библиотека заполнена на 40% · 95 материалов из 130</span>
+                <span class="nil-progress-pct">40%</span>
+            </div>
+            <div class="nil-bar">
+                <div class="nil-bar-fill" id="nilBarFill"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ========== БОНУСЫ ========== -->
+<section class="bonuses" id="bonuses">
+    <div class="container">
+        <div class="block-header">
+            <h2>Бонусы для учеников</h2>
+            <p>Инструменты и материалы, которые экономят твоё время</p>
+        </div>
+
+        <div class="bonuses-grid">
+
+            <!-- Калькулятор -->
+            <div class="b-card anim" id="bCalc">
+                <div class="b-icon">🧮</div>
+                <h3>Калькулятор себестоимости</h3>
+                <p>Рассчитай реальную стоимость торта: ингредиенты + работа + накладные расходы</p>
+                <div class="calculator">
+                    <div class="calc-row">
+                        <label>Ингредиенты</label>
+                        <input id="c1" type="number" placeholder="1500" min="0">
+                        <span>₽</span>
+                    </div>
+                    <div class="calc-row">
+                        <label>Упаковка</label>
+                        <input id="c2" type="number" placeholder="300" min="0">
+                        <span>₽</span>
+                    </div>
+                    <div class="calc-row">
+                        <label>Часы работы</label>
+                        <input id="c3" type="number" placeholder="6" min="0">
+                        <span>ч</span>
+                    </div>
+                    <div class="calc-row">
+                        <label>Ставка в час</label>
+                        <input id="c4" type="number" placeholder="300" min="0">
+                        <span>₽/ч</span>
+                    </div>
+                    <div class="calc-row">
+                        <label>Накладные</label>
+                        <input id="c5" type="number" placeholder="200" min="0">
+                        <span>₽</span>
+                    </div>
+                    <div class="calc-result">
+                        <span class="calc-lbl">Себестоимость</span>
+                        <span class="calc-val" id="calcOut">0 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Шпаргалки -->
+            <div class="b-card anim" id="bSheets">
+                <div class="b-icon">📋</div>
+                <h3>Шпаргалки и чеклисты</h3>
+                <p>Готовые памятки, которые всегда под рукой во время работы на кухне</p>
+                <div class="sheets-grid">
+                    <div class="sheet-item">Температуры выпечки</div>
+                    <div class="sheet-item">Замена ингредиентов</div>
+                    <div class="sheet-item">Пропорции кремов</div>
+                    <div class="sheet-item">Чеклист перед сдачей</div>
+                    <div class="sheet-item">Калибровка духовки</div>
+                    <div class="sheet-item">Сроки хранения</div>
+                </div>
+                <button class="btn btn-pink">Скачать все шпаргалки →</button>
+            </div>
+
+            <!-- Шаблоны (широкая карточка) -->
+            <div class="b-card featured anim" id="bTemplates">
+                <div class="b-icon">🎀</div>
+                <h3>Пакет шаблонов для бизнеса</h3>
+                <p>Всё, что нужно для профессиональной работы с клиентами: договоры, брифы, анкеты, прайс-листы и шаблоны Stories</p>
+                <button class="btn btn-outline-white">Посмотреть шаблоны →</button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ========== ФУТЕР ========== -->
+<footer class="footer" id="footer">
+    <div class="footer-grid">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <div class="footer-logo">Библиотека <em>кондитера</em></div>
+                <p>Образовательная платформа для начинающих кондитеров. Создана Дашей — кондитером с 5-летним опытом и 10 000+ подписчиков в Instagram.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Разделы</h4>
+                <ul>
+                    <li><a href="#start">Старт</a></li>
+                    <li><a href="#inventory">Инвентарь</a></li>
+                    <li><a href="#ingredients">Ингредиенты</a></li>
+                    <li><a href="#techniques">Техники</a></li>
+                    <li><a href="#biscuits">Бисквиты</a></li>
+                    <li><a href="#creams">Кремы</a></li>
+                    <li><a href="#assembly">Сборка</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Ещё</h4>
+                <ul>
+                    <li><a href="#decor">Декор</a></li>
+                    <li><a href="#prices">Цены</a></li>
+                    <li><a href="#clients">Клиенты</a></li>
+                    <li><a href="#documents">Документы</a></li>
+                    <li><a href="#instagram">Instagram</a></li>
+                    <li><a href="#templates">Шаблоны</a></li>
+                    <li><a href="#bonuses">Бонусы</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2024 Библиотека кондитера — сделано с <span class="heart">♥</span> для начинающих кондитеров</span>
+            <a class="insta-link" href="#">📸 @confectionery_library</a>
+        </div>
+    </div>
+</footer>
+
+
+</div><!-- #mainWrap -->
+
+<script src="img_data.js"></script>
+<script>
+
+// ========== ДАННЫЕ РАЗДЕЛОВ ==========
+const SECTIONS = [
+    { id: 'start',       name: 'Старт',       icon: '✦', count: 12, desc: 'Первые шаги в профессии'       },
+    { id: 'inventory',   name: 'Инвентарь',   icon: '⚙', count:  8, desc: 'Инструменты и оборудование'    },
+    { id: 'ingredients', name: 'Ингредиенты', icon: '❋', count: 15, desc: 'Всё о продуктах и свойствах'   },
+    { id: 'techniques',  name: 'Техники',     icon: '◈', count: 11, desc: 'Базовые и продвинутые техники'  },
+    { id: 'biscuits',    name: 'Бисквиты',    icon: '▲', count:  9, desc: 'Виды, рецепты, секреты'        },
+    { id: 'creams',      name: 'Кремы',       icon: '◐', count: 10, desc: 'Кремы, муссы и начинки'        },
+    { id: 'assembly',    name: 'Сборка',      icon: '▣', count:  7, desc: 'Сборка и выравнивание тортов'  },
+    { id: 'decor',       name: 'Декор',       icon: '✿', count: 14, desc: 'Украшение и оформление'        },
+    { id: 'prices',      name: 'Цены',        icon: '◆', count:  6, desc: 'Ценообразование и расчёты'     },
+    { id: 'clients',     name: 'Клиенты',     icon: '◉', count:  9, desc: 'Работа с заказчиками'          },
+    { id: 'documents',   name: 'Документы',   icon: '▤', count:  5, desc: 'Договоры и документация'       },
+    { id: 'instagram',   name: 'Instagram',   icon: '◎', count:  8, desc: 'Продвижение и контент'         },
+    { id: 'templates',   name: 'Шаблоны',     icon: '▦', count: 11, desc: 'Готовые шаблоны для работы'   },
+];
+
+// ========== ДАННЫЕ КАРТОЧЕК КОНТЕНТА ==========
+const TOPICS = {
+    'basics': {
+        title: 'Основы профессии',
+        desc:  'С чего начать, что изучить в первую очередь и как не потеряться',
+        cards: [
+            {
+                badge: 'guide', label: 'Гайд',
+                title: 'Кем быть кондитеру: варианты пути',
+                desc:  'Домашний кондитер, кафе, кейтеринг или собственный бренд — разбираем плюсы и минусы каждого пути.',
+                meta:  '10 мин чтения',
+                body: `
+                    <h2>Кем быть кондитеру: варианты пути</h2>
+                    <div class="g-meta"><span>📖 Гайд</span><span>⏱ 10 мин чтения</span><span>✦ Старт → Основы профессии</span></div>
+                    <div class="g-lead">Прежде чем покупать инвентарь и записываться на курсы — важно понять, каким кондитером ты хочешь стать. У каждого пути свои плюсы, риски и стартовые вложения.</div>
+                    <h3>🏠 Домашний кондитер</h3>
+                    <p>Самый популярный старт для девочек без опыта в бизнесе. Ты работаешь на своей кухне, принимаешь заказы через Instagram и сама устанавливаешь график.</p>
+                    <ul>
+                        <li>Минимальные вложения на старте (от 15 000 ₽)</li>
+                        <li>Гибкий график — можно совмещать с учёбой или работой</li>
+                        <li>Сложнее масштабироваться без отдельного помещения</li>
+                        <li>Юридически подходит статус самозанятой</li>
+                    </ul>
+                    <div class="g-tip"><span class="g-tip-icon">💡</span><span>На старте лучше не брать больше 2–3 заказов в неделю. Это поможет отработать процессы без стресса и не выгореть в первый месяц.</span></div>
+                    <div class="g-divider"></div>
+                    <h3>☕ Работа в кафе или кондитерской</h3>
+                    <p>Отличный вариант, если хочешь набрать опыт и понять профессию изнутри. Ты работаешь с командой, учишься у старших коллег и получаешь стабильную зарплату.</p>
+                    <ul>
+                        <li>Стабильный доход с первого дня</li>
+                        <li>Нет расходов на оборудование — всё уже есть</li>
+                        <li>Ограниченная творческая свобода</li>
+                        <li>Хорошая база для открытия своего дела позже</li>
+                    </ul>
+                    <div class="g-divider"></div>
+                    <h3>🚚 Кейтеринг и мероприятия</h3>
+                    <p>Подходит тем, кто хочет работать в команде и видеть реакцию гостей вживую. Высокий спрос на свадьбах, корпоративах и детских праздниках.</p>
+                    <ul>
+                        <li>Заказы крупные — одно мероприятие может закрыть месяц</li>
+                        <li>Нужна хорошая логистика и стрессоустойчивость</li>
+                        <li>Выраженная сезонность (весна–лето — пик)</li>
+                    </ul>
+                    <div class="g-divider"></div>
+                    <h3>🎯 Собственный бренд и онлайн</h3>
+                    <p>Самый амбициозный путь — ты создаёшь не просто торты, а бренд вокруг себя. Instagram, Reels, коллаборации и в перспективе — свои курсы или мастер-классы.</p>
+                    <ul>
+                        <li>Неограниченный потенциал заработка</li>
+                        <li>Нужны навыки съёмки и ведения соцсетей</li>
+                        <li>Долгий путь до стабильного дохода (6–12 месяцев)</li>
+                    </ul>
+                    <div class="g-tip"><span class="g-tip-icon">💡</span><span>Не обязательно выбирать один путь навсегда. Большинство успешных кондитеров начинали как домашние, потом параллельно развивали бренд — и только потом масштабировались.</span></div>
+                `
+            },
+            {
+                badge: 'video', label: 'Видео',
+                title: 'Мой путь: 5 лет в профессии',
+                desc:  'Рассказываю, как начинала с нуля, что пошло не так и какой опыт оказался самым ценным.',
+                meta:  '18 мин',
+                body: `
+                    <h2>Мой путь: 5 лет в профессии</h2>
+                    <div class="g-meta"><span>▶ Видео</span><span>⏱ 18 мин</span><span>✦ Старт → Основы профессии</span></div>
+                    <div class="g-lead">Честный рассказ о том, как я начинала в 14 лет, какие ошибки делала, через что прошла — и почему всё равно люблю эту профессию.</div>
+                    <div style="background:var(--accent-dark);border-radius:var(--r);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+                        <div style="text-align:center;color:var(--text-mid);">
+                            <div style="font-size:48px;margin-bottom:8px;">▶</div>
+                            <div style="font-size:14px;font-weight:600;">Видео будет доступно после покупки</div>
+                        </div>
+                    </div>
+                    <h3>О чём это видео</h3>
+                    <ul>
+                        <li>Как я пришла в кондитерское дело в 14 лет</li>
+                        <li>Первые заказы, провалы и то, что я из них вынесла</li>
+                        <li>Почему важно не сравнивать себя с другими на старте</li>
+                        <li>Три вещи, которые я бы сделала иначе, зная то, что знаю сейчас</li>
+                    </ul>
+                `
+            },
+            {
+                badge: 'checklist', label: 'Чеклист',
+                title: 'Готова ли я к первому заказу?',
+                desc:  '15 пунктов, которые помогут честно оценить свою готовность принять первого клиента.',
+                meta:  '15 пунктов',
+                body: `
+                    <h2>Готова ли я к первому заказу?</h2>
+                    <div class="g-meta"><span>✓ Чеклист</span><span>15 пунктов</span><span>✦ Старт → Основы профессии</span></div>
+                    <div class="g-lead">Пройди по каждому пункту честно. Если большинство ответов «да» — ты готова. Если нет — это нормально, это просто список того, над чем поработать.</div>
+                    <h3>Навыки и знания</h3>
+                    <ul>
+                        <li>Я умею печь хотя бы один вид бисквита стабильно (не угадываю каждый раз)</li>
+                        <li>Я умею делать крем-чиз или другой базовый крем</li>
+                        <li>Я пробовала собрать торт хотя бы 3 раза</li>
+                        <li>Я понимаю, что делать, если бисквит опал или крем расслоился</li>
+                    </ul>
+                    <h3>Инвентарь и оснащение</h3>
+                    <ul>
+                        <li>У меня есть исправные весы и миксер</li>
+                        <li>Есть форма, шпатель и поворотный столик (или его аналог)</li>
+                        <li>Холодильник вмещает готовый торт диаметром 18–20 см</li>
+                    </ul>
+                    <h3>Организация и коммуникация</h3>
+                    <ul>
+                        <li>Я могу объяснить клиенту состав торта и сроки хранения</li>
+                        <li>У меня есть понимание цены — я не буду работать себе в минус</li>
+                        <li>Я готова к тому, что первый заказ займёт больше времени, чем я планирую</li>
+                    </ul>
+                    <div class="g-tip"><span class="g-tip-icon">💡</span><span>Не жди момента, когда почувствуешь себя «готовой на 100%» — этот момент не наступит никогда. Первый заказ — лучший учитель.</span></div>
+                `
+            },
+        ]
+    },
+    'first-cake': {
+        title: 'Первый торт',
+        desc:  'Пошаговый путь от замеса теста до красивого готового изделия',
+        cards: [
+            {
+                badge: 'guide', label: 'Гайд',
+                title: 'Первый торт за выходные: план действий',
+                desc:  'Простая схема: выбираем рецепт, закупаем продукты, собираем и украшаем. Никакой паники.',
+                meta:  '15 мин чтения',
+                pdf:   'Шоколад.pdf',
+                body: `
+                    <h2>Первый торт за выходные: план действий</h2>
+                    <div class="g-meta"><span>📖 Гайд</span><span>⏱ 15 мин чтения</span><span>✦ Старт → Первый торт</span></div>
+                    <div class="g-lead">Пошаговый план на два дня: в субботу печём и делаем крем, в воскресенье собираем и украшаем. Без спешки, без паники.</div>
+                    <h3>День 1 — Суббота: основа</h3>
+                    <ul>
+                        <li>Утром: закупаем все продукты по списку (составь его заранее!)</li>
+                        <li>День: печём бисквит — он должен полностью остыть (минимум 4 часа)</li>
+                        <li>Вечер: делаем крем, убираем в холодильник</li>
+                    </ul>
+                    <div class="g-tip"><span class="g-tip-icon">💡</span><span>Никогда не собирай торт из тёплого бисквита. Крем потечёт, коржи съедут — и это не твоя ошибка, это физика.</span></div>
+                    <h3>День 2 — Воскресенье: сборка и декор</h3>
+                    <ul>
+                        <li>Разрезаем бисквит на коржи (3–4 штуки)</li>
+                        <li>Пропитываем каждый корж (сироп, кофе, сок — на выбор)</li>
+                        <li>Собираем торт в кольце или без — крем слоями</li>
+                        <li>Черновое выравнивание → в холодильник на 1 час</li>
+                        <li>Финальное выравнивание и декор</li>
+                    </ul>
+                `
+            },
+            {
+                badge: 'video', label: 'Видео',
+                title: 'Live-съёмка: пеку первый торт вместе с вами',
+                desc:  'Полный процесс в реальном времени — бисквит, крем, сборка. Показываю все нюансы и ошибки.',
+                meta:  '42 мин',
+                body: `
+                    <h2>Live-съёмка: первый торт</h2>
+                    <div class="g-meta"><span>▶ Видео</span><span>⏱ 42 мин</span><span>✦ Старт → Первый торт</span></div>
+                    <div class="g-lead">Полный процесс без монтажа и прикрас. Показываю ошибки в реальном времени — и как их исправлять прямо на месте.</div>
+                    <div style="background:var(--accent-dark);border-radius:var(--r);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+                        <div style="text-align:center;color:var(--text-mid);">
+                            <div style="font-size:48px;margin-bottom:8px;">▶</div>
+                            <div style="font-size:14px;font-weight:600;">Видео будет доступно после покупки</div>
+                        </div>
+                    </div>
+                    <h3>В этом видео</h3>
+                    <ul>
+                        <li>Замес и выпечка классического бисквита</li>
+                        <li>Приготовление крем-чиза — что делать, если он не взбивается</li>
+                        <li>Сборка торта: как добиться ровных слоёв</li>
+                        <li>Черновое и финальное выравнивание</li>
+                        <li>Простой декор ягодами и цветами</li>
+                    </ul>
+                `
+            },
+        ]
+    },
+    'workspace': {
+        title: 'Рабочее место',
+        desc:  'Как организовать пространство для комфортной работы дома',
+        cards: [
+            {
+                badge: 'guide', label: 'Гайд',
+                title: 'Домашняя кухня как кондитерский цех',
+                desc:  'Зонирование, хранение, гигиена — как превратить обычную кухню в эффективное рабочее место.',
+                meta:  '8 мин чтения',
+                body: `
+                    <h2>Домашняя кухня как кондитерский цех</h2>
+                    <div class="g-meta"><span>📖 Гайд</span><span>⏱ 8 мин чтения</span><span>✦ Старт → Рабочее место</span></div>
+                    <div class="g-lead">Тебе не нужна профессиональная кухня, чтобы делать профессиональные торты. Но нужен порядок — в пространстве и в голове.</div>
+                    <h3>Три зоны кондитера</h3>
+                    <ul>
+                        <li><strong>Зона замеса:</strong> рабочая поверхность минимум 60×80 см, рядом миксер и весы</li>
+                        <li><strong>Зона сборки:</strong> поворотный столик, шпателя, кондитерский мешок — всё под рукой</li>
+                        <li><strong>Зона хранения:</strong> отдельная полка в холодильнике только для заготовок</li>
+                    </ul>
+                    <h3>Гигиена = репутация</h3>
+                    <p>Каждый кондитер, работающий дома, несёт личную ответственность за безопасность своих изделий. Три простых правила:</p>
+                    <ul>
+                        <li>Смена одежды перед работой (или фартук)</li>
+                        <li>Волосы убраны всегда — без исключений</li>
+                        <li>Обработка поверхностей до и после каждого заказа</li>
+                    </ul>
+                    <div class="g-tip"><span class="g-tip-icon">💡</span><span>Сфотографируй свою кухню перед заказом и после уборки. Это дисциплинирует и даёт видимый результат.</span></div>
+                `
+            },
+            {
+                badge: 'checklist', label: 'Чеклист',
+                title: 'Чеклист перед каждым заказом',
+                desc:  'Что проверить на кухне, в холодильнике и в запасах перед тем, как брать новый заказ.',
+                meta:  '12 пунктов',
+                body: `
+                    <h2>Чеклист перед каждым заказом</h2>
+                    <div class="g-meta"><span>✓ Чеклист</span><span>12 пунктов</span><span>✦ Старт → Рабочее место</span></div>
+                    <div class="g-lead">Распечатай или сохрани на телефон. Пробегайся по списку перед тем, как подтвердить заказ клиенту.</div>
+                    <h3>Продукты и запасы</h3>
+                    <ul>
+                        <li>Все основные ингредиенты в наличии или заказаны</li>
+                        <li>Срок годности ключевых продуктов не истекает раньше даты выдачи</li>
+                        <li>Есть запас — на случай, если придётся переделать</li>
+                    </ul>
+                    <h3>Оборудование</h3>
+                    <ul>
+                        <li>Миксер работает исправно</li>
+                        <li>Форма нужного диаметра есть и чистая</li>
+                        <li>В холодильнике есть свободная полка под готовый торт</li>
+                    </ul>
+                    <h3>Время и логистика</h3>
+                    <ul>
+                        <li>В расписании есть время на выпечку + охлаждение + сборку + декор</li>
+                        <li>Дата и время выдачи подтверждены с клиентом</li>
+                        <li>Понятно, как торт доедет до клиента (коробка, термосумка)</li>
+                    </ul>
+                `
+            },
+        ]
+    },
+    'mistakes': {
+        title: 'Ошибки новичков',
+        desc:  'Частые промахи, которых можно избежать с самого начала',
+        cards: [
+            {
+                badge: 'guide', label: 'Гайд',
+                title: 'ТОП-10 ошибок начинающих кондитеров',
+                desc:  'Собрала самые частые промахи — от неправильной температуры до работы без договора.',
+                meta:  '12 мин чтения',
+                body: `
+                    <h2>ТОП-10 ошибок начинающих кондитеров</h2>
+                    <div class="g-meta"><span>📖 Гайд</span><span>⏱ 12 мин чтения</span><span>✦ Старт → Ошибки новичков</span></div>
+                    <div class="g-lead">Все эти ошибки я делала сама. Теперь они — часть твоей подготовки, а не твоих провалов.</div>
+                    <h3>1. Холодные ингредиенты</h3>
+                    <p>Масло и яйца должны быть комнатной температуры. Холодное масло не взобьётся правильно — тесто получится тяжёлым, бисквит не поднимется.</p>
+                    <h3>2. Открывать духовку раньше времени</h3>
+                    <p>Первые 20 минут — не открывать духовку. Никогда. Перепад температур = осевший бисквит.</p>
+                    <h3>3. Работать без весов</h3>
+                    <p>Чашки и стаканы — не инструмент кондитера. Весы дают точность, точность даёт стабильный результат.</p>
+                    <div class="g-tip"><span class="g-tip-icon">💡</span><span>Запиши каждое отклонение от рецепта и его результат. Через месяц у тебя будет персональный справочник ошибок и решений.</span></div>
+                    <h3>4. Спешить с разборкой торта</h3>
+                    <p>Торт должен стабилизироваться в холодильнике минимум 4 часа после сборки. Лучше — ночь.</p>
+                    <h3>5. Работать без договора</h3>
+                    <p>Даже с подругой. Договор защищает обоих — и тебя, и клиента.</p>
+                `
+            },
+            {
+                badge: 'video', label: 'Видео',
+                title: 'Разбор: почему бисквит упал',
+                desc:  'Показываю 7 причин, из-за которых бисквит оседает, и как каждую из них исправить.',
+                meta:  '15 мин',
+                body: `
+                    <h2>Разбор: почему бисквит упал</h2>
+                    <div class="g-meta"><span>▶ Видео</span><span>⏱ 15 мин</span><span>✦ Старт → Ошибки новичков</span></div>
+                    <div class="g-lead">7 причин — и к каждой конкретное решение. Смотри, запоминай, больше не повторяй.</div>
+                    <div style="background:var(--accent-dark);border-radius:var(--r);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+                        <div style="text-align:center;color:var(--text-mid);">
+                            <div style="font-size:48px;margin-bottom:8px;">▶</div>
+                            <div style="font-size:14px;font-weight:600;">Видео будет доступно после покупки</div>
+                        </div>
+                    </div>
+                    <h3>7 причин из видео</h3>
+                    <ul>
+                        <li>Открыла духовку раньше 20 минут</li>
+                        <li>Недовзбитые белки или желтки</li>
+                        <li>Плохо просеянная мука — осталось много комков</li>
+                        <li>Холодные ингредиенты</li>
+                        <li>Неправильная температура духовки (духовки врут!)</li>
+                        <li>Слишком долго мешала тесто после добавления муки</li>
+                        <li>Перевернула форму слишком рано</li>
+                    </ul>
+                `
+            },
+            {
+                badge: 'template', label: 'Шаблон',
+                title: 'Дневник кондитера: анализ ошибок',
+                desc:  'Шаблон для разбора каждого заказа — что вышло хорошо, что улучшить в следующий раз.',
+                meta:  'Google Docs',
+                body: `
+                    <h2>Дневник кондитера: анализ ошибок</h2>
+                    <div class="g-meta"><span>⬡ Шаблон</span><span>Google Docs</span><span>✦ Старт → Ошибки новичков</span></div>
+                    <div class="g-lead">После каждого заказа трать 10 минут на заполнение этого шаблона. Через 3 месяца ты будешь удивлена, как сильно выросла.</div>
+                    <h3>Структура дневника</h3>
+                    <ul>
+                        <li><strong>Дата и описание заказа</strong> — что это был за торт, для кого</li>
+                        <li><strong>Что прошло хорошо</strong> — обязательно, не только ошибки</li>
+                        <li><strong>Что пошло не так</strong> — конкретно, без самокритики</li>
+                        <li><strong>Почему это произошло</strong> — анализ причины</li>
+                        <li><strong>Что сделаю иначе</strong> — конкретный план</li>
+                        <li><strong>Оценка от клиента</strong> — отзыв или впечатление</li>
+                    </ul>
+                    <div style="text-align:center;margin-top:28px;">
+                        <button class="btn btn-pink" style="margin:0 auto;">Скачать шаблон в Google Docs →</button>
+                    </div>
+                `
+            },
+        ]
+    },
+    'learning': {
+        title: 'Как учиться',
+        desc:  'Методы обучения, ресурсы и план развития кондитера',
+        cards: [
+            {
+                badge: 'guide', label: 'Гайд',
+                title: 'Роадмап кондитера на первый год',
+                desc:  'Чёткий план: что изучить в первый месяц, квартал и год, чтобы расти последовательно, а не хаотично.',
+                meta:  '10 мин чтения',
+                body: `
+                    <h2>Роадмап кондитера на первый год</h2>
+                    <div class="g-meta"><span>📖 Гайд</span><span>⏱ 10 мин чтения</span><span>✦ Старт → Как учиться</span></div>
+                    <div class="g-lead">Главная ошибка новичков — хвататься за всё сразу. Этот роадмап даёт последовательность, которая реально работает.</div>
+                    <h3>Месяц 1–2: база</h3>
+                    <ul>
+                        <li>1–2 вида бисквита — доведи до стабильного результата</li>
+                        <li>2–3 вида крема (крем-чиз, ганаш, масляный)</li>
+                        <li>Навык сборки и чернового выравнивания</li>
+                    </ul>
+                    <h3>Квартал 2: расширение</h3>
+                    <ul>
+                        <li>Добавляем муссы и начинки</li>
+                        <li>Учимся работать с мастикой или велюром</li>
+                        <li>Первые заказы — максимум 2–3 в месяц</li>
+                    </ul>
+                    <h3>Квартал 3–4: профессия</h3>
+                    <ul>
+                        <li>Ценообразование и расчёт себестоимости</li>
+                        <li>Работа с клиентами и договор</li>
+                        <li>Фотосъёмка тортов для Instagram</li>
+                        <li>Первый мини-прайс и стабильные заказы</li>
+                    </ul>
+                    <div class="g-tip"><span class="g-tip-icon">💡</span><span>Не сравнивай свой месяц 1 с чьим-то месяцем 24. Сравнивай себя с собой неделю назад.</span></div>
+                `
+            },
+            {
+                badge: 'video', label: 'Видео',
+                title: 'Как я учусь сама: 5 работающих методов',
+                desc:  'Практики, которые реально дают результат — без дорогих курсов и выгорания.',
+                meta:  '20 мин',
+                body: `
+                    <h2>Как я учусь сама: 5 работающих методов</h2>
+                    <div class="g-meta"><span>▶ Видео</span><span>⏱ 20 мин</span><span>✦ Старт → Как учиться</span></div>
+                    <div class="g-lead">Я не заканчивала профессиональное кулинарное училище. Всё, что умею — из практики, YouTube, книг и одного хорошего наставника.</div>
+                    <div style="background:var(--accent-dark);border-radius:var(--r);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+                        <div style="text-align:center;color:var(--text-mid);">
+                            <div style="font-size:48px;margin-bottom:8px;">▶</div>
+                            <div style="font-size:14px;font-weight:600;">Видео будет доступно после покупки</div>
+                        </div>
+                    </div>
+                    <h3>5 методов из видео</h3>
+                    <ul>
+                        <li>Метод одного навыка: не берёшь новое, пока не закрепила старое</li>
+                        <li>Дневник практики: записываешь каждый раз — что получилось и почему</li>
+                        <li>Разбор чужих работ: анализируешь торты из Instagram с точки зрения техники</li>
+                        <li>Обратная инженерия рецепта: пробуешь угадать состав по вкусу</li>
+                        <li>Учи других: объясни подруге — поймёшь сама</li>
+                    </ul>
+                `
+            },
+        ]
+    },
+};
+
+// ========== BADGE MAP ==========
+const BADGE_CLS  = { guide: 'badge-guide', video: 'badge-video', checklist: 'badge-checklist', template: 'badge-template' };
+const BADGE_ICON = { guide: '📖',          video: '▶',           checklist: '✓',               template: '⬡' };
+
+// ========== ЯКОРЯ РАЗДЕЛОВ ==========
+const SECTION_ANCHORS = { start: 'start', inventory: 'inventory' };
+
+// ========== ДАННЫЕ КАРТОЧЕК «ИНВЕНТАРЬ» ==========
+const INVENTORY_CARDS = [
+    {
+        badge: 'guide', label: 'Гайд',
+        title: 'Что купить на старте до 5000₽',
+        desc:  'Полный список с объяснением зачем каждый инструмент. Весы, формы, шпатели, скребки, термометр — каждый пункт с коротким объяснением',
+        meta:  '8 мин читать',
+    },
+    {
+        badge: 'guide', label: 'Гайд',
+        title: 'Что НЕ покупать на старте',
+        desc:  'Конкретные позиции на которых сливают деньги. С объяснением почему это подождёт',
+        meta:  '5 мин читать',
+    },
+    {
+        badge: 'video', label: 'Видео',
+        title: 'Миксер и поворотный столик: как выбрать',
+        desc:  'Показываю разницу между моделями, на что смотреть при выборе, минимальный бюджет',
+        meta:  '12 мин',
+        videoPage: true,
+        body: `
+            <h2>Миксер и поворотный столик: как выбрать</h2>
+            <div class="g-meta"><span>▶ Видео</span><span>⏱ 12 мин</span><span>✦ Инвентарь</span></div>
+            <div class="g-lead">Два инструмента, которые покупают неправильно чаще всего. Объясняю разницу между вариантами и показываю в работе.</div>
+            <div style="background:var(--accent-dark);border-radius:var(--r);aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;margin-bottom:28px;">
+                <div style="text-align:center;color:var(--text-mid);">
+                    <div style="font-size:48px;margin-bottom:8px;">▶</div>
+                    <div style="font-size:14px;font-weight:600;">Видео будет доступно после покупки</div>
+                </div>
+            </div>
+            <h3>В этом видео</h3>
+            <ul>
+                <li>Ручной vs планетарный миксер — когда что выбирать</li>
+                <li>На что смотреть при покупке (мощность, чаша, насадки)</li>
+                <li>Поворотный столик: пластик, металл, стекло — разница в работе</li>
+                <li>Мой выбор для старта с бюджетом до 3000 ₽</li>
+            </ul>
+        `
+    },
+    {
+        badge: 'guide', label: 'Гайд',
+        title: 'Когда и что докупать по мере роста',
+        desc:  'Чёткая логика апгрейда — что покупать после первых 10 заказов, после первых 50',
+        meta:  '6 мин читать',
+    },
+];
+
+
+// ========== РЕНДЕР: сетка разделов ==========
+function renderSections() {
+    const grid = document.getElementById('sectionsGrid');
+    SECTIONS.forEach((s, i) => {
+        const el = document.createElement('div');
+        el.className = 'sec-card anim';
+        el.style.transitionDelay = (i * 0.04) + 's';
+        el.innerHTML = `
+            <div class="sec-icon">${s.icon}</div>
+            <div class="sec-name">${s.name}</div>
+            <div class="sec-desc">${s.desc}</div>
+            <span class="sec-tag">● ${s.count} тем</span>
+        `;
+        el.addEventListener('click', () => {
+            document.querySelectorAll('.sec-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            if (s.id === 'inventory') {
+                openInventoryPage();
+            } else {
+                const anchor = SECTION_ANCHORS[s.id] || 'start';
+                document.getElementById(anchor).scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+        grid.appendChild(el);
+    });
+}
+
+
+// ========== ПАПКА-МОДАЛКА: открыть / закрыть ==========
+function openFolder(card) {
+    const overlay  = document.getElementById('folderOverlay');
+    const tabBadge = document.getElementById('folderTabBadge');
+    const tabTitle = document.getElementById('folderTabTitle');
+    const content  = document.getElementById('folderContent');
+
+    // Цвет полоски вкладки по типу контента
+    const tabColors = { guide: '#2E6DB4', video: '#2E7D32', checklist: '#D4537E', template: '#B7710A' };
+    document.querySelector('.folder-tab').style.setProperty('--tab-color', tabColors[card.badge] || 'var(--pink)');
+    document.querySelector('.folder-tab::before'); // перекраска через inline переменную
+
+    // Перекрасить полоску сверху вкладки
+    const tabEl = document.querySelector('.folder-tab');
+    tabEl.style.setProperty('border-top', `3px solid ${tabColors[card.badge]}`);
+
+    // Бейдж вкладки — тот же стиль что у карточки
+    tabBadge.className = 'folder-tab-badge ' + BADGE_CLS[card.badge];
+    tabBadge.textContent = BADGE_ICON[card.badge] + ' ' + card.label;
+    tabTitle.textContent = card.title;
+
+    if (card.pdf) {
+        overlay.classList.add('pdf-mode');
+        content.innerHTML = `<img src="${SHOLAD_IMG}" alt="${card.title}" style="width:100%;display:block;border-radius:6px;">`;
+        document.querySelector('.folder-body').scrollTop = 0;
+    } else {
+        content.innerHTML = card.body || `
+            <div style="text-align:center;padding:64px 20px 48px;">
+                <div style="font-size:52px;margin-bottom:22px;">📖</div>
+                <h2 style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--text);margin-bottom:14px;line-height:1.3;">${card.title}</h2>
+                <p style="font-size:15px;color:var(--text-light);line-height:1.7;">Контент этого гайда появится здесь</p>
+            </div>
+        `;
+        overlay.classList.remove('pdf-mode');
+        document.querySelector('.folder-body').scrollTop = 0;
+    }
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeFolder() {
+    const overlay = document.getElementById('folderOverlay');
+    overlay.classList.remove('open', 'pdf-mode');
+    document.body.style.overflow = '';
+}
+
+// Закрывать по клику на фон и по Escape — инициализируется в DOMContentLoaded
+
+
+// ========== РЕНДЕР: карточки контента ==========
+function renderCards(topicKey) {
+    const grid  = document.getElementById('contentGrid');
+    const topic = TOPICS[topicKey];
+    grid.innerHTML = '';
+
+    document.getElementById('contentTitle').textContent = topic.title;
+    document.getElementById('contentDesc').textContent  = topic.desc;
+
+    topic.cards.forEach((c, i) => {
+        const el = document.createElement('div');
+        el.className = 'c-card anim';
+        el.style.transitionDelay = (i * 0.07) + 's';
+        el.innerHTML = `
+            <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
+            <div class="c-title">${c.title}</div>
+            <div class="c-desc">${c.desc}</div>
+            <div class="c-footer">
+                <span class="c-meta">${c.meta}</span>
+                <button class="c-btn">Открыть →</button>
+            </div>
+        `;
+
+        // Открываем папку по клику на кнопку или на всю карточку
+        el.querySelector('.c-btn').addEventListener('click', () => openFolder(c));
+        el.addEventListener('click', e => {
+            if (!e.target.classList.contains('c-btn')) openFolder(c);
+        });
+
+        grid.appendChild(el);
+
+        // небольшая задержка чтобы observer успел
+        requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
+    });
+}
+
+
+// ========== НАВБАР: скролл + активная ссылка ==========
+function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    const links  = document.querySelectorAll('.nav-link');
+    const sects  = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 20);
+
+        let cur = '';
+        sects.forEach(s => {
+            if (window.scrollY >= s.offsetTop - 90) cur = s.id;
+        });
+
+        links.forEach(l => {
+            l.classList.toggle('active', l.getAttribute('href') === '#' + cur);
+        });
+    }, { passive: true });
+}
+
+
+// ========== МОБИЛЬНОЕ МЕНЮ ==========
+function initMobileMenu() {
+    const btn  = document.getElementById('hamburger');
+    const menu = document.getElementById('mobileMenu');
+
+    btn.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        btn.classList.toggle('open', open);
+    });
+
+    menu.querySelectorAll('.nav-link').forEach(l => {
+        l.addEventListener('click', () => {
+            menu.classList.remove('open');
+            btn.classList.remove('open');
+        });
+    });
+}
+
+
+// ========== БОКОВОЕ МЕНЮ ПОДТЕМ ==========
+function initSidebar() {
+    document.querySelectorAll('.topic-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
+            item.classList.add('active');
+            renderCards(item.dataset.topic);
+        });
+    });
+}
+
+
+// ========== СТРАНИЦА «ИНВЕНТАРЬ»: открыть / закрыть ==========
+function openInventoryPage() {
+    const ip = document.getElementById('inventoryPage');
+    const mw = document.getElementById('mainWrap');
+    ip.scrollTop = 0;
+    ip.classList.add('open');
+    mw.classList.add('slide-left');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeInventoryPage() {
+    const ip = document.getElementById('inventoryPage');
+    const mw = document.getElementById('mainWrap');
+    ip.classList.remove('open');
+    mw.classList.remove('slide-left');
+    document.body.style.overflow = '';
+}
+
+
+// ========== ВИДЕО-СТРАНИЦА: открыть / закрыть ==========
+function openVideoPage() {
+    const vp = document.getElementById('videoPage');
+    const mw = document.getElementById('mainWrap');
+    vp.scrollTop = 0;
+    vp.classList.add('open');
+    mw.classList.add('slide-left');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeVideoPage() {
+    const vp = document.getElementById('videoPage');
+    const mw = document.getElementById('mainWrap');
+    vp.classList.remove('open');
+    mw.classList.remove('slide-left');
+    document.body.style.overflow = '';
+}
+
+
+// ========== ИНВЕНТАРЬ: рендер карточек ==========
+function initInventory() {
+    const grid = document.getElementById('invTopicsGrid');
+    if (!grid) return;
+    INVENTORY_CARDS.forEach((c, i) => {
+        const el = document.createElement('div');
+        el.className = 'c-card anim';
+        el.style.transitionDelay = (i * 0.07) + 's';
+        el.innerHTML = `
+            <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
+            <div class="c-title">${c.title}</div>
+            <div class="c-desc">${c.desc}</div>
+            <div class="c-footer">
+                <span class="c-meta">${c.meta}</span>
+                <button class="c-btn">Открыть →</button>
+            </div>
+        `;
+        const open = () => c.videoPage ? openVideoPage() : openFolder(c);
+        el.querySelector('.c-btn').addEventListener('click', open);
+        el.addEventListener('click', e => { if (!e.target.classList.contains('c-btn')) open(); });
+        grid.appendChild(el);
+        requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
+    });
+}
+
+
+// ========== IntersectionObserver для .anim ==========
+function initScrollAnim() {
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.10, rootMargin: '0px 0px -30px 0px' });
+
+    document.querySelectorAll('.anim').forEach(el => io.observe(el));
+}
+
+
+// ========== КАЛЬКУЛЯТОР ==========
+function initCalc() {
+    const ids = ['c1','c2','c3','c4','c5'];
+    const out = document.getElementById('calcOut');
+
+    function update() {
+        const [ing, pack, hrs, rate, over] = ids.map(id => +(document.getElementById(id).value) || 0);
+        const total = ing + pack + (hrs * rate) + over;
+        out.textContent = total.toLocaleString('ru-RU') + ' ₽';
+    }
+
+    ids.forEach(id => document.getElementById(id).addEventListener('input', update));
+}
+
+
+// ========== ИНИЦИАЛИЗАЦИЯ ==========
+document.addEventListener('DOMContentLoaded', () => {
+    renderSections();
+    renderCards('basics');
+    initNavbar();
+    initMobileMenu();
+    initSidebar();
+    initInventory();
+    initCalc();
+
+    // Баннер — сдвигаем навбар и герой вниз на высоту баннера
+    const bar = document.getElementById('announceBar');
+    const nav = document.getElementById('navbar');
+    const hero = document.querySelector('.hero');
+    if (bar) {
+        const h = bar.offsetHeight;
+        nav.style.top = h + 'px';
+        hero.style.paddingTop = (130 + h) + 'px';
+        document.getElementById('announceClose').addEventListener('click', () => {
+            bar.style.display = 'none';
+            nav.style.top = '0';
+            hero.style.paddingTop = '130px';
+        });
+    }
+
+    // Прогресс-бар «Новое в библиотеке» — анимируем при появлении
+    const nilFill = document.getElementById('nilBarFill');
+    if (nilFill) {
+        new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                nilFill.style.width = '40%';
+            }
+        }, { threshold: 0.6 }).observe(nilFill);
+    }
+
+    // Папка: закрывать по клику на фон и по Escape
+    document.getElementById('folderOverlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeFolder();
+    });
+    document.getElementById('folderClose').addEventListener('click', closeFolder);
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') { closeFolder(); closeVideoPage(); closeInventoryPage(); }
+    });
+
+    // Видео-страница: кнопка «← Назад»
+    document.getElementById('vpBack').addEventListener('click', closeVideoPage);
+
+    // Страница «Инвентарь»: кнопка «← Назад»
+    document.getElementById('invBack').addEventListener('click', closeInventoryPage);
+
+    // Навбар и мобильное меню: ссылка «Инвентарь» → открываем страницу вместо скролла
+    document.querySelectorAll('a[href="#inventory"]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            openInventoryPage();
+        });
+    });
+
+    // Запускаем observer чуть позже, чтобы карточки уже были в DOM
+    setTimeout(initScrollAnim, 100);
+});
+</script>
+
+
+<!-- ========== ПАПКА-МОДАЛКА ========== -->
+<div class="folder-overlay" id="folderOverlay">
+    <div class="folder-wrap">
+        <div class="folder-top">
+            <div class="folder-tab">
+                <span class="folder-tab-badge" id="folderTabBadge">📖 Гайд</span>
+                <span class="folder-tab-title" id="folderTabTitle">Название</span>
+            </div>
+            <button class="folder-close" id="folderClose">×</button>
+        </div>
+        <div class="folder-body">
+            <div class="folder-content" id="folderContent"></div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== СТРАНИЦА РАЗДЕЛА «ИНВЕНТАРЬ» ========== -->
+<div id="inventoryPage">
+    <div class="vp-header">
+        <button class="vp-back" id="invBack">← Назад</button>
+        <div class="vp-header-crumb">
+            <span>Библиотека</span>
+            <span>→</span>
+            <span class="cur">Инвентарь</span>
+        </div>
+    </div>
+    <div class="inv-hero">
+        <div class="container">
+            <h1>Инвентарь</h1>
+            <p class="inv-hero-desc">В этой главе ты разберёшься что купить на старте и не слить деньги на ненужное. Здесь собрано всё про инструменты, оборудование и правильный апгрейд по мере роста.</p>
+            <div class="inv-hero-badges">
+                <span class="inv-hero-badge">✦ 4 темы</span>
+                <span class="inv-hero-badge">📖 3 гайда</span>
+                <span class="inv-hero-badge">▶ 1 видео</span>
+            </div>
+        </div>
+    </div>
+    <div class="inv-topics">
+        <div class="container">
+            <div class="inv-topics-grid" id="invTopicsGrid">
+                <!-- Карточки вставляются через JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ========== ВИДЕО-СТРАНИЦА ========== -->
+<div id="videoPage">
+    <div class="vp-header">
+        <button class="vp-back" id="vpBack">← Назад</button>
+        <div class="vp-header-crumb">
+            <span>Библиотека</span>
+            <span>→</span>
+            <span>Инвентарь</span>
+            <span>→</span>
+            <span class="cur">Видео</span>
+        </div>
+    </div>
+    <div class="vp-body">
+        <h1 class="vp-title">Миксер и поворотный столик: как выбрать</h1>
+        <div style="position: relative; padding-top: 56.25%; width: 100%"><iframe src="https://kinescope.io/embed/8yb1PCSvA3BrFERxMhxGjX" allow="autoplay; fullscreen; picture-in-picture; encrypted-media; gyroscope; accelerometer; clipboard-write; screen-wake-lock;" frameborder="0" allowfullscreen style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"></iframe></div>
+        <div class="vp-chips">
+            <span class="vp-chip">⏱ 12 мин</span>
+            <span class="vp-chip">📂 Инвентарь</span>
+        </div>
+        <h2 class="vp-h2">Что ты узнаешь из этого видео</h2>
+        <ul class="vp-points">
+            <li>Чем планетарный миксер отличается от ручного и когда что нужно</li>
+            <li>На какой мощности не стоит экономить</li>
+            <li>Нужен ли поворотный столик с первого заказа — честный ответ</li>
+            <li>Минимальный бюджет на старте</li>
+        </ul>
+        <h2 class="vp-h2">Конспект</h2>
+        <div class="vp-konspekt">
+            <span class="vp-konspekt-icon">📝</span>
+            <span class="vp-konspekt-text">Текстовый конспект к этому видео появится здесь</span>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
