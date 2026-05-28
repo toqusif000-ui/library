@@ -648,25 +648,34 @@
 
         .c-bookmark-btn {
             position: absolute;
-            top: 12px;
-            right: 12px;
-            width: 30px;
-            height: 30px;
+            top: 10px;
+            right: 10px;
+            width: 28px;
+            height: 28px;
             border: none;
-            background: transparent;
+            background: var(--white);
+            box-shadow: 0 1px 4px rgba(0,0,0,.12);
             cursor: pointer;
-            font-size: 15px;
             border-radius: 50%;
-            transition: background .2s, opacity .2s;
-            opacity: 0.3;
+            transition: background .2s, color .2s;
+            color: #C0B8B0;
             z-index: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
         }
 
-        .c-bookmark-btn:hover { background: var(--accent); opacity: 1; }
-        .c-bookmark-btn.active { opacity: 1; }
+        .c-bookmark-btn:hover { color: var(--pink); }
+        .c-bookmark-btn.active { color: var(--pink); background: var(--accent); }
+
+        @keyframes bookmarkPop {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.35); }
+            70%  { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        .bookmark-pop { animation: bookmarkPop 0.35s ease forwards; }
 
         .c-card:hover {
             transform: translateY(-3px);
@@ -2475,6 +2484,19 @@ const TOPICS = {
 
 // ========== BADGE MAP ==========
 const BADGE_CLS  = { guide: 'badge-guide', video: 'badge-video', checklist: 'badge-checklist', template: 'badge-template' };
+
+const BOOKMARK_SVG = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`;
+
+function handleBookmarkClick(e, cardData, btn) {
+    e.stopPropagation();
+    const added = toggleBookmark(cardData);
+    btn.classList.toggle('active', added);
+    btn.title = added ? 'Убрать из сохранённого' : 'Сохранить';
+    btn.classList.remove('bookmark-pop');
+    void btn.offsetWidth;
+    btn.classList.add('bookmark-pop');
+    setTimeout(() => btn.classList.remove('bookmark-pop'), 350);
+}
 const BADGE_ICON = { guide: '📖',          video: '▶',           checklist: '✓',               template: '⬡' };
 
 // ========== ЯКОРЯ РАЗДЕЛОВ ==========
@@ -2622,7 +2644,7 @@ function renderCards(topicKey) {
 
         const saved = isBookmarked(c.title);
         el.innerHTML = `
-            <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">🔖</button>
+            <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">${BOOKMARK_SVG}</button>
             <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
             <div class="c-title">${c.title}</div>
             <div class="c-desc">${c.desc}</div>
@@ -2633,12 +2655,10 @@ function renderCards(topicKey) {
         `;
 
         const bmBtn = el.querySelector('.c-bookmark-btn');
-        bmBtn.addEventListener('click', e => {
-            e.stopPropagation();
-            const added = toggleBookmark({ title: c.title, desc: c.desc, badge: c.badge, label: c.label, meta: c.meta, sectionTitle: topic.title });
-            bmBtn.classList.toggle('active', added);
-            bmBtn.title = added ? 'Убрать из сохранённого' : 'Сохранить';
-        });
+        bmBtn.addEventListener('click', e => handleBookmarkClick(e,
+            { title: c.title, desc: c.desc, badge: c.badge, label: c.label, meta: c.meta, sectionTitle: topic.title },
+            bmBtn
+        ));
 
         el.querySelector('.c-btn').addEventListener('click', () => openFolder(c));
         el.addEventListener('click', e => {
@@ -2919,11 +2939,15 @@ function closeVideoPage() {
 function initInventory() {
     const grid = document.getElementById('invTopicsGrid');
     if (!grid) return;
+    const invSectionName = SECTIONS.find(s => s.id === 'inventory')?.name || 'Инвентарь';
     INVENTORY_CARDS.forEach((c, i) => {
         const el = document.createElement('div');
         el.className = 'c-card anim';
         el.style.transitionDelay = (i * 0.07) + 's';
+
+        const saved = isBookmarked(c.title);
         el.innerHTML = `
+            <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">${BOOKMARK_SVG}</button>
             <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
             <div class="c-title">${c.title}</div>
             <div class="c-desc">${c.desc}</div>
@@ -2932,9 +2956,18 @@ function initInventory() {
                 <button class="c-btn">Открыть →</button>
             </div>
         `;
+
+        const bmBtn = el.querySelector('.c-bookmark-btn');
+        bmBtn.addEventListener('click', e => handleBookmarkClick(e,
+            { title: c.title, desc: c.desc, badge: c.badge, label: c.label, meta: c.meta, sectionTitle: invSectionName },
+            bmBtn
+        ));
+
         const open = () => c.videoPage ? openVideoPage() : openFolder(c);
         el.querySelector('.c-btn').addEventListener('click', open);
-        el.addEventListener('click', e => { if (!e.target.classList.contains('c-btn')) open(); });
+        el.addEventListener('click', e => {
+            if (!e.target.classList.contains('c-btn') && !e.target.closest('.c-bookmark-btn')) open();
+        });
         grid.appendChild(el);
         requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
     });
