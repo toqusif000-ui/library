@@ -312,6 +312,24 @@
             overflow: hidden;
         }
 
+        @keyframes highlightPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(212, 83, 126, 0.5); transform: scale(1); }
+            40%  { box-shadow: 0 0 0 12px rgba(212, 83, 126, 0.2); transform: scale(1.02); }
+            100% { box-shadow: 0 0 0 0 rgba(212, 83, 126, 0); transform: scale(1); }
+        }
+
+        .highlight-pulse {
+            animation: highlightPulse 1.5s ease forwards;
+        }
+
+        .search-overlay mark {
+            background: transparent;
+            color: #D4537E;
+            font-weight: 700;
+            border-bottom: 2px solid #D4537E;
+            padding: 0;
+        }
+
 
         /* ========== ГЕРОЙ ========== */
         .hero {
@@ -2647,6 +2665,13 @@ function closeSearch() {
     renderSearchResults('');
 }
 
+function highlightMatch(text, query) {
+    const q = query.trim();
+    if (!q) return text;
+    const re = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    return text.replace(re, '<mark>$1</mark>');
+}
+
 function renderSearchResults(query) {
     const grid  = document.getElementById('searchResultsGrid');
     const empty = document.getElementById('searchEmpty');
@@ -2660,8 +2685,7 @@ function renderSearchResults(query) {
     }
 
     const results = _searchIndex.filter(entry =>
-        entry.card.title.toLowerCase().includes(q) ||
-        entry.card.desc.toLowerCase().includes(q)
+        entry.card.title.toLowerCase().includes(q)
     );
 
     grid.innerHTML    = '';
@@ -2683,7 +2707,7 @@ function renderSearchResults(query) {
         el.innerHTML = `
             <div class="sr-section-label">${sectionName}</div>
             <div class="badge ${BADGE_CLS[card.badge]}" style="display:inline-flex;margin-bottom:4px">${BADGE_ICON[card.badge]} ${card.label}</div>
-            <div class="sr-title">${card.title}</div>
+            <div class="sr-title">${highlightMatch(card.title, query)}</div>
             <div class="sr-desc">${card.desc}</div>
         `;
         el.addEventListener('click', () => handleSearchResultClick(entry));
@@ -2692,7 +2716,7 @@ function renderSearchResults(query) {
 }
 
 function handleSearchResultClick(entry) {
-    const { sectionId, topicKey } = entry;
+    const { sectionId, topicKey, card } = entry;
     closeSearch();
 
     if (sectionId === 'inventory') {
@@ -2711,6 +2735,17 @@ function handleSearchResultClick(entry) {
             item.classList.toggle('active', item.dataset.topic === topicKey);
         });
     }
+
+    // Подсвечиваем нужную карточку после рендера и скролла
+    setTimeout(() => {
+        document.querySelectorAll('.c-card').forEach(el => {
+            const titleEl = el.querySelector('.c-title');
+            if (titleEl && titleEl.textContent.trim() === card.title.trim()) {
+                el.classList.add('highlight-pulse');
+                setTimeout(() => el.classList.remove('highlight-pulse'), 1500);
+            }
+        });
+    }, 400);
 }
 
 function initSearch() {
