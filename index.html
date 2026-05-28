@@ -2509,6 +2509,7 @@ const INVENTORY_CARDS = [
         title: 'Что купить на старте до 5000₽',
         desc:  'Полный список с объяснением зачем каждый инструмент. Весы, формы, шпатели, скребки, термометр — каждый пункт с коротким объяснением',
         meta:  '8 мин читать',
+        pdf: 'kosmo',
     },
     {
         badge: 'guide', label: 'Гайд',
@@ -2601,7 +2602,8 @@ function openFolder(card) {
 
     if (card.pdf) {
         overlay.classList.add('pdf-mode');
-        content.innerHTML = `<img src="${SHOLAD_IMG}" alt="${card.title}" style="width:100%;display:block;border-radius:6px;">`;
+        const imgSrc = card.pdf === 'kosmo' ? KOSMO_IMG : SHOLAD_IMG;
+        content.innerHTML = `<img src="${imgSrc}" alt="${card.title}" style="width:100%;display:block;border-radius:6px;">`;
         document.querySelector('.folder-body').scrollTop = 0;
     } else {
         content.innerHTML = card.body || `
