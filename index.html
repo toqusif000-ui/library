@@ -340,6 +340,39 @@
             overflow: hidden;
         }
 
+        .hero-photo-wrap {
+            position: absolute;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .hero-photo-left  { left: 0; }
+        .hero-photo-right { right: 0; }
+
+        .hero-photo-img {
+            height: clamp(340px, 42vw, 500px);
+            width: auto;
+            display: block;
+        }
+
+        .hero-photo-wrap::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120%;
+            height: 90px;
+            background: radial-gradient(ellipse at center bottom, rgba(212,83,126,0.18) 0%, transparent 72%);
+            pointer-events: none;
+        }
+
+        @media (max-width: 900px) {
+            .hero-photo-wrap { display: none; }
+        }
+
         .hero::before {
             content: '';
             position: absolute;
@@ -641,6 +674,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
             gap: 18px;
+            padding-top: 44px;
         }
 
         /* Карточка контента */
@@ -749,6 +783,53 @@
         }
 
         .c-btn:hover { background: #D4537E !important; color: var(--white) !important; }
+
+        /* ========== ДЕКОРАЦИИ КАРТОЧКИ ========== */
+        .c-card {
+            box-shadow: 0 8px 32px rgba(212,83,126,0.09), 0 2px 8px rgba(0,0,0,0.04) !important;
+        }
+        .c-card:hover {
+            box-shadow: 0 14px 40px rgba(212,83,126,0.16), 0 4px 12px rgba(0,0,0,0.06) !important;
+        }
+
+        .c-card-clip {
+            position: absolute;
+            top: -38px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 52px;
+            height: auto;
+            mix-blend-mode: multiply;
+            z-index: 3;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .c-card-photo {
+            position: absolute;
+            top: -10px;
+            right: -14px;
+            width: 124px;
+            height: auto;
+            transform: rotate(3deg);
+            z-index: 2;
+            pointer-events: none;
+            user-select: none;
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.14));
+        }
+
+        .c-card-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 52px;
+            font-weight: 600;
+            color: rgba(212, 83, 126, 0.18);
+            line-height: 1;
+            margin-bottom: 2px;
+            letter-spacing: -0.02em;
+        }
+
+        /* Bookmark над фото */
+        .c-bookmark-btn { z-index: 4 !important; }
 
 
         /* ========== БОНУСЫ ========== */
@@ -1494,6 +1575,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
+            padding-top: 44px;
         }
 
 
@@ -1816,6 +1898,12 @@
 
 <!-- ========== ГЕРОЙ ========== -->
 <section class="hero" id="hero">
+    <div class="hero-photo-wrap hero-photo-left">
+        <img class="hero-photo-img" src="фото слева.png" alt="" draggable="false">
+    </div>
+    <div class="hero-photo-wrap hero-photo-right">
+        <img class="hero-photo-img" src="фото справа.png" alt="" draggable="false">
+    </div>
     <div class="hero-inner">
         <div class="hero-badge">Образовательная платформа от Даши · 5 лет опыта</div>
         <h1>Библиотека<br><em>кондитера</em></h1>
@@ -2663,8 +2751,12 @@ function renderCards(topicKey) {
         el.style.transitionDelay = (i * 0.07) + 's';
 
         const saved = isBookmarked(c.title);
+        const num = String(i + 1).padStart(2, '0');
         el.innerHTML = `
+            <img class="c-card-clip" src="зажим.png" alt="" draggable="false">
+            <img class="c-card-photo" src="фото с рамкой.png" alt="" draggable="false">
             <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">${BOOKMARK_SVG}</button>
+            <div class="c-card-number">${num}</div>
             <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
             <div class="c-title">${c.title}</div>
             <div class="c-desc">${c.desc}</div>
@@ -2966,8 +3058,12 @@ function initInventory() {
         el.style.transitionDelay = (i * 0.07) + 's';
 
         const saved = isBookmarked(c.title);
+        const num = String(i + 1).padStart(2, '0');
         el.innerHTML = `
+            <img class="c-card-clip" src="зажим.png" alt="" draggable="false">
+            <img class="c-card-photo" src="фото с рамкой.png" alt="" draggable="false">
             <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">${BOOKMARK_SVG}</button>
+            <div class="c-card-number">${num}</div>
             <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
             <div class="c-title">${c.title}</div>
             <div class="c-desc">${c.desc}</div>
