@@ -151,7 +151,7 @@
 
 
         /* ========== ПОИСК: кнопка в навбаре ========== */
-        .search-btn {
+        .search-btn, .profile-btn {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -165,9 +165,10 @@
             transition: background .2s, color .2s;
             flex-shrink: 0;
             color: var(--text-mid);
+            text-decoration: none;
         }
 
-        .search-btn:hover { background: var(--accent); color: var(--pink); }
+        .search-btn:hover, .profile-btn:hover { background: var(--accent); color: var(--pink); }
 
         /* ========== ПОИСК: оверлей ========== */
         .search-overlay {
@@ -642,7 +643,30 @@
             padding: 22px;
             border: 1.5px solid var(--accent-dark);
             transition: transform .3s, box-shadow .3s, border-color .3s;
+            position: relative;
         }
+
+        .c-bookmark-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 15px;
+            border-radius: 50%;
+            transition: background .2s, opacity .2s;
+            opacity: 0.3;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .c-bookmark-btn:hover { background: var(--accent); opacity: 1; }
+        .c-bookmark-btn.active { opacity: 1; }
 
         .c-card:hover {
             transform: translateY(-3px);
@@ -1710,6 +1734,7 @@
             <a class="nav-link" href="#templates">Шаблоны</a>
         </div>
         <button class="search-btn" id="searchBtn" aria-label="Поиск">🔍</button>
+        <a class="profile-btn" href="cabinet.html" title="Мой кабинет">👤</a>
         <div class="hamburger" id="hamburger">
             <span></span><span></span><span></span>
         </div>
@@ -2594,7 +2619,10 @@ function renderCards(topicKey) {
         const el = document.createElement('div');
         el.className = 'c-card anim';
         el.style.transitionDelay = (i * 0.07) + 's';
+
+        const saved = isBookmarked(c.title);
         el.innerHTML = `
+            <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">🔖</button>
             <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
             <div class="c-title">${c.title}</div>
             <div class="c-desc">${c.desc}</div>
@@ -2604,17 +2632,47 @@ function renderCards(topicKey) {
             </div>
         `;
 
-        // Открываем папку по клику на кнопку или на всю карточку
+        const bmBtn = el.querySelector('.c-bookmark-btn');
+        bmBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            const added = toggleBookmark({ title: c.title, desc: c.desc, badge: c.badge, label: c.label, meta: c.meta, sectionTitle: topic.title });
+            bmBtn.classList.toggle('active', added);
+            bmBtn.title = added ? 'Убрать из сохранённого' : 'Сохранить';
+        });
+
         el.querySelector('.c-btn').addEventListener('click', () => openFolder(c));
         el.addEventListener('click', e => {
-            if (!e.target.classList.contains('c-btn')) openFolder(c);
+            if (!e.target.classList.contains('c-btn') && !e.target.closest('.c-bookmark-btn')) openFolder(c);
         });
 
         grid.appendChild(el);
 
-        // небольшая задержка чтобы observer успел
         requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
     });
+}
+
+
+// ========== ЗАКЛАДКИ ==========
+function getBookmarks() {
+    return JSON.parse(localStorage.getItem('cabinet_bookmarks') || '[]');
+}
+
+function isBookmarked(title) {
+    return getBookmarks().some(b => b.title === title);
+}
+
+function toggleBookmark(cardData) {
+    const bm  = getBookmarks();
+    const idx = bm.findIndex(b => b.title === cardData.title);
+    if (idx > -1) {
+        bm.splice(idx, 1);
+        localStorage.setItem('cabinet_bookmarks', JSON.stringify(bm));
+        return false;
+    } else {
+        bm.push(cardData);
+        localStorage.setItem('cabinet_bookmarks', JSON.stringify(bm));
+        return true;
+    }
 }
 
 

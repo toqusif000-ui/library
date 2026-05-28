@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой кабинет — Библиотека кондитера</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --pink:        #D4537E;
+            --pink-light:  #E8799E;
+            --pink-dark:   #B8426A;
+            --bg:          #FAF7F4;
+            --accent:      #FBEAF0;
+            --accent-dark: #F2D5E2;
+            --text:        #2D1F2E;
+            --text-mid:    #6B5060;
+            --text-light:  #A08090;
+            --white:       #FFFFFF;
+            --shadow:      0 4px 24px rgba(212,83,126,.08);
+            --shadow-hov:  0 10px 36px rgba(212,83,126,.16);
+            --r:           16px;
+            --r-sm:        8px;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Manrope', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; line-height: 1.2; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed; inset: 0 0 auto 0; z-index: 200;
+            background: rgba(250,247,244,.94); backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--accent-dark); transition: box-shadow .3s;
+        }
+        .navbar.scrolled { box-shadow: 0 2px 20px rgba(212,83,126,.10); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 20px; height: 64px; }
+        .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: var(--pink); white-space: nowrap; flex-shrink: 0; }
+        .nav-logo em { font-style: italic; font-weight: 300; }
+        .nav-links { display: flex; align-items: center; gap: 2px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-link { font-size: 13px; font-weight: 500; color: var(--text-mid); padding: 6px 12px; border-radius: 20px; white-space: nowrap; transition: all .2s; cursor: pointer; flex-shrink: 0; }
+        .nav-link:hover, .nav-link.active { color: var(--pink); background: var(--accent); }
+        .search-btn, .profile-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 36px; height: 36px; border: none; background: transparent;
+            cursor: pointer; font-size: 17px; border-radius: 50%;
+            transition: background .2s, color .2s; flex-shrink: 0;
+            color: var(--text-mid); text-decoration: none;
+        }
+        .search-btn:hover, .profile-btn:hover { background: var(--accent); color: var(--pink); }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; flex-shrink: 0; }
+        .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all .3s; }
+        .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .hamburger.open span:nth-child(2) { opacity: 0; }
+        .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+        .mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--white); padding: 12px 24px 20px; box-shadow: 0 8px 32px rgba(0,0,0,.10); z-index: 199; flex-direction: column; gap: 2px; }
+        .mobile-menu.open { display: flex; }
+        .mobile-menu .nav-link { font-size: 15px; padding: 11px 16px; border-radius: var(--r-sm); }
+
+        @media (max-width: 640px) {
+            .nav-links { display: none; }
+            .hamburger { display: flex; }
+        }
+
+        /* ===== LAYOUT ===== */
+        .cabinet-wrap { padding-top: 64px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        .cab-section { padding: 60px 0; border-bottom: 1px solid var(--accent-dark); }
+        .cab-section:last-child { border-bottom: none; }
+        .sec-title { font-size: 32px; font-weight: 500; margin-bottom: 6px; }
+        .sec-sub   { font-size: 15px; color: var(--text-mid); margin-bottom: 32px; }
+
+        /* ===== PROFILE ===== */
+        .profile-section { background: var(--white); border-bottom: 1px solid var(--accent-dark); padding: 48px 0; }
+        .profile-block { display: flex; align-items: flex-start; gap: 36px; flex-wrap: wrap; }
+
+        .avatar-wrap { position: relative; width: 96px; height: 96px; flex-shrink: 0; cursor: pointer; }
+        .avatar-circle {
+            width: 96px; height: 96px; border-radius: 50%; border: 3px solid var(--accent-dark);
+            background: var(--accent); display: flex; align-items: center; justify-content: center;
+            font-size: 38px; overflow: hidden; object-fit: cover;
+        }
+        img.avatar-circle { font-size: 0; }
+        .avatar-overlay {
+            position: absolute; inset: 0; border-radius: 50%; background: rgba(45,31,46,.52);
+            display: flex; align-items: center; justify-content: center; opacity: 0;
+            transition: opacity .2s; font-size: 11px; font-weight: 600; color: white;
+            text-align: center; line-height: 1.3; pointer-events: none;
+        }
+        .avatar-wrap:hover .avatar-overlay { opacity: 1; }
+
+        .profile-info { flex: 1; min-width: 240px; }
+        .pf-field { margin-bottom: 18px; }
+        .pf-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-light); margin-bottom: 3px; }
+        .pf-display {
+            cursor: pointer; border-bottom: 2px solid transparent; transition: border-color .2s;
+            padding: 2px 0; display: inline-block; min-width: 100px;
+        }
+        .pf-display:hover { border-bottom-color: var(--accent-dark); }
+        .pf-display.empty { color: var(--text-light); }
+        .pf-display.large { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; }
+        .pf-display.mid   { font-size: 15px; }
+        .pf-input {
+            border: none; outline: none; background: transparent;
+            border-bottom: 2px solid var(--pink); padding: 2px 0;
+            font-family: 'Manrope', sans-serif; font-size: 15px; color: var(--text);
+            width: 100%; display: block;
+        }
+        .pf-input.large { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; }
+        .save-bar { display: flex; align-items: center; gap: 12px; margin-top: 6px; }
+        .save-btn {
+            display: none; background: var(--pink); color: white; border: none;
+            border-radius: 24px; padding: 9px 22px; font-family: 'Manrope', sans-serif;
+            font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s;
+        }
+        .save-btn:hover { background: var(--pink-dark); }
+        .save-btn.show { display: inline-block; }
+
+        /* ===== MILESTONES ===== */
+        .track-scroll { overflow-x: auto; padding-bottom: 12px; }
+        .track {
+            display: flex; align-items: flex-start; position: relative;
+            min-width: 640px; padding: 0 22px;
+        }
+        .track::before {
+            content: ''; position: absolute; top: 22px; left: 22px; right: 22px;
+            height: 3px; background: var(--accent-dark); z-index: 0;
+        }
+        .track-done-line {
+            position: absolute; top: 22px; left: 22px;
+            height: 3px; background: var(--pink); z-index: 1;
+            width: 0; transition: width .7s ease;
+        }
+        .ms-item {
+            display: flex; flex-direction: column; align-items: center;
+            flex: 1; cursor: pointer; position: relative; z-index: 2; gap: 10px;
+        }
+        .ms-dot {
+            width: 44px; height: 44px; border-radius: 50%;
+            border: 3px solid var(--accent-dark); background: var(--white);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; transition: all .3s; flex-shrink: 0;
+        }
+        .ms-item.done    .ms-dot { background: var(--pink); border-color: var(--pink); color: white; font-size: 16px; }
+        .ms-item.current .ms-dot { border-color: var(--pink); background: var(--accent); animation: msPulse 2s ease-in-out infinite; }
+        @keyframes msPulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(212,83,126,.45); }
+            50%      { box-shadow: 0 0 0 10px rgba(212,83,126,0); }
+        }
+        .ms-label { font-size: 11px; font-weight: 600; text-align: center; color: var(--text-mid); max-width: 76px; line-height: 1.35; }
+        .ms-item.done    .ms-label { color: var(--pink); }
+        .ms-item.current .ms-label { color: var(--pink); font-weight: 700; }
+
+        @media (max-width: 640px) {
+            .track { flex-direction: column; min-width: unset; padding: 0 0 0 22px; }
+            .track::before { top: 0; bottom: 0; left: 22px; right: auto; width: 3px; height: 100%; }
+            .track-done-line { display: none; }
+            .ms-item { flex-direction: row; gap: 16px; padding: 10px 0; width: 100%; }
+            .ms-label { text-align: left; max-width: none; font-size: 14px; }
+        }
+
+        /* ===== MILESTONE MODAL ===== */
+        .ms-overlay {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(45,31,46,.45); backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center; padding: 24px;
+            opacity: 0; pointer-events: none; transition: opacity .3s;
+        }
+        .ms-overlay.open { opacity: 1; pointer-events: all; }
+        .ms-modal {
+            background: var(--white); border-radius: 24px;
+            width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; padding: 40px;
+            transform: translateY(20px); transition: transform .3s;
+        }
+        .ms-overlay.open .ms-modal { transform: translateY(0); }
+        .ms-close {
+            float: right; background: none; border: none; font-size: 26px; line-height: 1;
+            cursor: pointer; color: var(--text-light); margin: -8px -8px 0 0; transition: color .2s;
+        }
+        .ms-close:hover { color: var(--pink); }
+        .ms-modal-emoji { font-size: 44px; margin-bottom: 10px; display: block; }
+        .ms-modal-title { font-size: 30px; font-weight: 500; margin-bottom: 8px; }
+        .ms-modal-desc  { font-size: 14px; color: var(--text-mid); line-height: 1.75; margin-bottom: 28px; }
+        .ms-photo-area {
+            border: 2px dashed var(--accent-dark); border-radius: var(--r);
+            padding: 20px; text-align: center; cursor: pointer; margin-bottom: 20px;
+            transition: border-color .2s; overflow: hidden;
+        }
+        .ms-photo-area:hover { border-color: var(--pink); }
+        .ms-photo-ph { color: var(--text-light); font-size: 13px; }
+        .ms-photo-ph em { font-size: 28px; display: block; font-style: normal; margin-bottom: 6px; }
+        .ms-photo-img { max-width: 100%; max-height: 240px; border-radius: var(--r-sm); object-fit: cover; display: none; }
+        .ms-field-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-light); margin-bottom: 6px; display: block; }
+        .ms-textarea {
+            width: 100%; min-height: 96px; border: 1.5px solid var(--accent-dark);
+            border-radius: var(--r-sm); padding: 12px 16px;
+            font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--text);
+            resize: vertical; outline: none; transition: border-color .2s;
+            margin-bottom: 18px; background: var(--bg); line-height: 1.6;
+        }
+        .ms-textarea:focus { border-color: var(--pink); }
+        .ms-date-input {
+            width: 100%; border: 1.5px solid var(--accent-dark); border-radius: var(--r-sm);
+            padding: 10px 16px; font-family: 'Manrope', sans-serif; font-size: 14px; color: var(--text);
+            outline: none; transition: border-color .2s; margin-bottom: 24px; background: var(--bg);
+        }
+        .ms-date-input:focus { border-color: var(--pink); }
+        .ms-action-btn {
+            width: 100%; padding: 14px; border-radius: 24px; border: none;
+            font-family: 'Manrope', sans-serif; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all .2s;
+        }
+        .ms-action-btn.todo { background: var(--pink); color: white; }
+        .ms-action-btn.todo:hover { background: var(--pink-dark); }
+        .ms-action-btn.done { background: var(--accent-dark); color: var(--text-mid); }
+        .ms-action-btn.done:hover { background: #ddc4d1; }
+
+        /* ===== BOOKMARKS ===== */
+        .empty-state { text-align: center; padding: 64px 20px; }
+        .empty-icon  { margin-bottom: 20px; }
+        .empty-title { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
+        .empty-hint  { font-size: 14px; color: var(--text-light); }
+        .bm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+        @media (max-width: 640px) { .bm-grid { grid-template-columns: 1fr; } }
+        .bm-card {
+            background: var(--white); border-radius: var(--r); padding: 22px;
+            border: 1.5px solid var(--accent-dark); position: relative;
+            transition: transform .3s, box-shadow .3s;
+        }
+        .bm-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+        .bm-del {
+            position: absolute; top: 12px; right: 12px; width: 28px; height: 28px;
+            border: none; background: transparent; cursor: pointer; font-size: 12px;
+            color: var(--text-light); border-radius: 50%; transition: all .2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bm-del:hover { background: var(--accent); color: var(--pink); }
+        .bm-section { font-size: 11px; color: var(--pink); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+        .bm-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
+        .bm-desc  { font-size: 13px; color: var(--text-mid); line-height: 1.55; margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .bm-footer { display: flex; align-items: center; justify-content: space-between; }
+        .bm-meta { font-size: 12px; color: var(--text-light); }
+        .bm-btn { font-size: 12px; font-weight: 600; color: var(--pink); padding: 6px 13px; border-radius: 20px; border: 1.5px solid var(--accent-dark); background: transparent; cursor: pointer; transition: all .2s; }
+        .bm-btn:hover { background: var(--accent); border-color: var(--pink-light); }
+
+        /* Badge (same as index.html) */
+        .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-bottom: 12px; letter-spacing: .05em; text-transform: uppercase; }
+        .badge-guide     { background: #EBF3FC; color: #2E6DB4; }
+        .badge-video     { background: #EBF7EC; color: #2E7D32; }
+        .badge-checklist { background: #FBEAF0; color: #D4537E; }
+        .badge-template  { background: #FEF3E2; color: #B7710A; }
+
+        /* ===== NOTES ===== */
+        .notes-area {
+            width: 100%; min-height: 220px; border: none; border-radius: var(--r);
+            padding: 24px; font-family: 'Manrope', sans-serif; font-size: 15px; color: var(--text);
+            resize: vertical; outline: none; background: var(--white);
+            box-shadow: var(--shadow); line-height: 1.75;
+        }
+        .notes-status { font-size: 12px; color: var(--text-light); margin-top: 8px; height: 18px; opacity: 0; transition: opacity .3s; }
+        .notes-status.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+    <div class="nav-inner">
+        <a class="nav-logo" href="index.html">Библиотека <em>кондитера</em></a>
+        <div class="nav-links">
+            <a class="nav-link" href="index.html#start">Старт</a>
+            <a class="nav-link" href="index.html#inventory">Инвентарь</a>
+            <a class="nav-link" href="index.html#ingredients">Ингредиенты</a>
+            <a class="nav-link" href="index.html#techniques">Техники</a>
+            <a class="nav-link" href="index.html#biscuits">Бисквиты</a>
+            <a class="nav-link" href="index.html#creams">Кремы</a>
+            <a class="nav-link" href="index.html#assembly">Сборка</a>
+            <a class="nav-link" href="index.html#decor">Декор</a>
+            <a class="nav-link" href="index.html#prices">Цены</a>
+            <a class="nav-link" href="index.html#clients">Клиенты</a>
+            <a class="nav-link" href="index.html#documents">Документы</a>
+            <a class="nav-link" href="index.html#instagram">Instagram</a>
+            <a class="nav-link" href="index.html#templates">Шаблоны</a>
+            <a class="nav-link active" href="cabinet.html">Кабинет</a>
+        </div>
+        <a class="profile-btn active" href="cabinet.html" title="Мой кабинет">👤</a>
+        <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+    </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+    <a class="nav-link" href="index.html#start">Старт</a>
+    <a class="nav-link" href="index.html#inventory">Инвентарь</a>
+    <a class="nav-link" href="index.html#ingredients">Ингредиенты</a>
+    <a class="nav-link" href="index.html#techniques">Техники</a>
+    <a class="nav-link" href="index.html#biscuits">Бисквиты</a>
+    <a class="nav-link" href="index.html#creams">Кремы</a>
+    <a class="nav-link" href="index.html#assembly">Сборка</a>
+    <a class="nav-link" href="index.html#decor">Декор</a>
+    <a class="nav-link" href="index.html#prices">Цены</a>
+    <a class="nav-link" href="index.html#clients">Клиенты</a>
+    <a class="nav-link" href="index.html#documents">Документы</a>
+    <a class="nav-link" href="index.html#instagram">Instagram</a>
+    <a class="nav-link" href="index.html#templates">Шаблоны</a>
+    <a class="nav-link active" href="cabinet.html">Кабинет</a>
+</div>
+
+
+<div class="cabinet-wrap">
+
+    <!-- ===== PROFILE ===== -->
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-block">
+
+                <div class="avatar-wrap" id="avatarWrap">
+                    <div class="avatar-circle" id="avatarCircle">🎂</div>
+                    <div class="avatar-overlay">Изменить<br>фото</div>
+                    <input type="file" id="avatarInput" accept="image/*" style="display:none">
+                </div>
+
+                <div class="profile-info">
+                    <div class="pf-field">
+                        <div class="pf-label">Имя</div>
+                        <span class="pf-display large empty" id="pfName"
+                              data-key="name" data-placeholder="Введи своё имя"></span>
+                    </div>
+                    <div class="pf-field">
+                        <div class="pf-label">Начала учиться</div>
+                        <span class="pf-display mid empty" id="pfDate"
+                              data-key="startDate" data-type="date" data-placeholder="Выбери дату начала"></span>
+                    </div>
+                    <div class="pf-field">
+                        <div class="pf-label">Моя цель</div>
+                        <span class="pf-display mid empty" id="pfGoal"
+                              data-key="goal" data-placeholder="Например: первый заказ до 1 сентября"></span>
+                    </div>
+                    <div class="save-bar">
+                        <button class="save-btn" id="saveProfileBtn" onclick="saveProfile()">Сохранить</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== MILESTONES ===== -->
+    <section class="cab-section">
+        <div class="container">
+            <h2 class="sec-title">Мой путь</h2>
+            <p class="sec-sub">Отмечай пройденные этапы — каждый из них стоит запомнить</p>
+            <div class="track-scroll">
+                <div class="track" id="milestoneTrack">
+                    <div class="track-done-line" id="trackDoneLine"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BOOKMARKS ===== -->
+    <section class="cab-section">
+        <div class="container">
+            <h2 class="sec-title">Сохранённое</h2>
+            <div id="bookmarksWrap"></div>
+        </div>
+    </section>
+
+    <!-- ===== NOTES ===== -->
+    <section class="cab-section">
+        <div class="container">
+            <h2 class="sec-title" style="margin-bottom:6px">Мои заметки</h2>
+            <p style="font-size:15px;color:var(--text-mid);margin-bottom:24px">Всё важное под рукой</p>
+            <textarea class="notes-area" id="notesArea"
+                placeholder="Записывай сюда всё что важно — рецепты, идеи, вопросы..."></textarea>
+            <div class="notes-status" id="notesStatus">Сохранено ✓</div>
+        </div>
+    </section>
+
+</div><!-- /.cabinet-wrap -->
+
+
+<!-- ===== MILESTONE MODAL ===== -->
+<div class="ms-overlay" id="msOverlay">
+    <div class="ms-modal">
+        <button class="ms-close" id="msClose">×</button>
+        <span class="ms-modal-emoji" id="msEmoji"></span>
+        <h2 class="ms-modal-title" id="msTitle"></h2>
+        <p class="ms-modal-desc"  id="msDesc"></p>
+
+        <div class="ms-photo-area" id="msPhotoArea">
+            <div class="ms-photo-ph" id="msPhotoPh"><em>📷</em>Добавить фото этого момента</div>
+            <img class="ms-photo-img" id="msPhotoImg" src="" alt="">
+        </div>
+        <input type="file" id="msPhotoInput" accept="image/*" style="display:none">
+
+        <label class="ms-field-label">Как это было...</label>
+        <textarea class="ms-textarea" id="msNote"
+            placeholder="Расскажи себе — что чувствовала, что было сложно, что удивило..."></textarea>
+
+        <label class="ms-field-label">Дата</label>
+        <input type="date" class="ms-date-input" id="msDate">
+
+        <button class="ms-action-btn" id="msActionBtn"></button>
+    </div>
+</div>
+
+
+<script>
+
+// ===== MILESTONES DATA =====
+const MILESTONES = [
+    { key: 'cream',  emoji: '🍦', title: 'Первый крем',    desc: 'Ты взбила крем-чиз без единого комочка. Звучит просто, но именно этот момент запоминается — когда понимаешь, что текстура подчиняется тебе.' },
+    { key: 'cake',   emoji: '🎂', title: 'Первый торт',    desc: 'Ровные бока, ровный верх, ни одного крена. Первый правильно собранный торт — переломный момент, когда ты поняла: получается!' },
+    { key: 'drips',  emoji: '🍫', title: 'Первые подтёки', desc: 'Ганаш лёг как надо — ровными каплями, не залил всё, не встал колом. Это чистая физика и немного магии.' },
+    { key: 'glaze',  emoji: '✨', title: 'Первая глазурь', desc: 'Зеркальная глазурь или велюр — неважно. Важно что ты увидела своё отражение в торте и не смогла не улыбнуться.' },
+    { key: 'order',  emoji: '💸', title: 'Первый заказ',   desc: 'Кто-то заплатил за твой торт реальными деньгами. Это не просто оплата — это подтверждение того, что твои руки создают ценность.' },
+    { key: 'review', emoji: '⭐', title: 'Первый отзыв',   desc: 'Клиент написал, что доволен. Что торт был вкусным, красивым, что все спрашивали рецепт. Запомни это чувство.' },
+    { key: 'price',  emoji: '💎', title: 'Подняла цену',   desc: 'Ты назвала новую цену — выше прежней. И клиент согласился. Это значит ты выросла как мастер, и рынок это признал.' },
+    { key: 'ten',    emoji: '🏆', title: '10 заказов',     desc: 'Десять тортов, десять историй, десять довольных людей. Ты больше не новичок. Ты — кондитер с опытом.' },
+];
+
+const BADGE_CLS  = { guide: 'badge-guide', video: 'badge-video', checklist: 'badge-checklist', template: 'badge-template' };
+const BADGE_ICON = { guide: '📖', video: '▶', checklist: '✓', template: '⬡' };
+
+// ===== STORAGE =====
+const LS_KEY = {
+    profile:    'cabinet_profile',
+    milestones: 'cabinet_milestones',
+    bookmarks:  'cabinet_bookmarks',
+    notes:      'cabinet_notes',
+};
+
+function lsGet(key) {
+    try { return JSON.parse(localStorage.getItem(LS_KEY[key]) || (key === 'notes' ? '""' : (key === 'bookmarks' ? '[]' : '{}'))) ; } catch { return key === 'bookmarks' ? [] : {}; }
+}
+function lsSet(key, val) { localStorage.setItem(LS_KEY[key], JSON.stringify(val)); }
+
+// ===== PROFILE =====
+let profileData = {};
+let profileDirty = false;
+
+function initProfile() {
+    profileData = lsGet('profile');
+
+    // Avatar
+    if (profileData.avatar) setAvatarSrc(profileData.avatar);
+
+    // Fields
+    ['pfName', 'pfDate', 'pfGoal'].forEach(id => {
+        const el  = document.getElementById(id);
+        const key = el.dataset.key;
+        const val = profileData[key] || '';
+        setDisplayValue(el, val);
+        el.addEventListener('click', () => activateField(el));
+    });
+
+    // Avatar upload
+    const wrap  = document.getElementById('avatarWrap');
+    const input = document.getElementById('avatarInput');
+    wrap.addEventListener('click', () => input.click());
+    input.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        resizeImage(file, 192, 192, dataUrl => {
+            profileData.avatar = dataUrl;
+            setAvatarSrc(dataUrl);
+            markDirty();
+        });
+        input.value = '';
+    });
+}
+
+function setAvatarSrc(src) {
+    const circle = document.getElementById('avatarCircle');
+    if (circle.tagName === 'DIV') {
+        const img = document.createElement('img');
+        img.className = 'avatar-circle';
+        img.id = 'avatarCircle';
+        img.src = src;
+        circle.replaceWith(img);
+    } else {
+        circle.src = src;
+    }
+}
+
+function setDisplayValue(el, val) {
+    if (el.dataset.type === 'date' && val) {
+        const [y, m, d] = val.split('-');
+        el.textContent = `${d}.${m}.${y}`;
+    } else {
+        el.textContent = val || el.dataset.placeholder;
+    }
+    el.classList.toggle('empty', !val);
+}
+
+function activateField(span) {
+    const key    = span.dataset.key;
+    const isDate = span.dataset.type === 'date';
+    const isLarge = span.classList.contains('large');
+
+    const input = document.createElement('input');
+    input.type  = isDate ? 'date' : 'text';
+    input.className = 'pf-input' + (isLarge ? ' large' : '');
+    input.id         = span.id;
+    input.dataset.key   = key;
+    input.dataset.type  = span.dataset.type || '';
+    input.dataset.placeholder = span.dataset.placeholder || '';
+    input.value = profileData[key] || '';
+    input.placeholder = span.dataset.placeholder || '';
+
+    span.replaceWith(input);
+    input.focus();
+
+    function commit() {
+        profileData[key] = input.value;
+        markDirty();
+        const newSpan = document.createElement('span');
+        newSpan.className      = span.className;
+        newSpan.id             = input.id;
+        newSpan.dataset.key    = key;
+        newSpan.dataset.type   = input.dataset.type;
+        newSpan.dataset.placeholder = input.dataset.placeholder;
+        setDisplayValue(newSpan, input.value);
+        input.replaceWith(newSpan);
+        newSpan.addEventListener('click', () => activateField(newSpan));
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') input.blur(); });
+}
+
+function markDirty() {
+    profileDirty = true;
+    document.getElementById('saveProfileBtn').classList.add('show');
+}
+
+function saveProfile() {
+    lsSet('profile', profileData);
+    profileDirty = false;
+    const btn = document.getElementById('saveProfileBtn');
+    btn.textContent = 'Сохранено ✓';
+    setTimeout(() => {
+        btn.classList.remove('show');
+        btn.textContent = 'Сохранить';
+    }, 1600);
+}
+
+function resizeImage(file, w, h, cb) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            const size = Math.min(img.width, img.height);
+            const sx   = (img.width  - size) / 2;
+            const sy   = (img.height - size) / 2;
+            canvas.getContext('2d').drawImage(img, sx, sy, size, size, 0, 0, w, h);
+            cb(canvas.toDataURL('image/jpeg', 0.85));
+        };
+        img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+// ===== MILESTONES =====
+let msData = {};
+let activeMsKey = null;
+
+function initMilestones() {
+    msData = lsGet('milestones');
+    renderTrack();
+
+    document.getElementById('msClose').addEventListener('click', closeMsModal);
+    document.getElementById('msOverlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeMsModal();
+    });
+    document.getElementById('msActionBtn').addEventListener('click', toggleMilestone);
+
+    const photoArea  = document.getElementById('msPhotoArea');
+    const photoInput = document.getElementById('msPhotoInput');
+    photoArea.addEventListener('click', () => photoInput.click());
+    photoInput.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        resizeImage(file, 800, 600, dataUrl => {
+            // Keep aspect ratio — resizeImage above is just max bound; here use a variant
+            const reader2 = new FileReader();
+            reader2.onload = ev2 => {
+                const img2 = new Image();
+                img2.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const maxW = 800; const scale = Math.min(1, maxW / img2.width);
+                    canvas.width = img2.width * scale; canvas.height = img2.height * scale;
+                    canvas.getContext('2d').drawImage(img2, 0, 0, canvas.width, canvas.height);
+                    const url = canvas.toDataURL('image/jpeg', 0.8);
+                    if (!msData[activeMsKey]) msData[activeMsKey] = {};
+                    msData[activeMsKey].photo = url;
+                    document.getElementById('msPhotoImg').src = url;
+                    document.getElementById('msPhotoImg').style.display = '';
+                    document.getElementById('msPhotoPh').style.display  = 'none';
+                };
+                img2.src = ev2.target.result;
+            };
+            reader2.readAsDataURL(file);
+        });
+        photoInput.value = '';
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('msOverlay').classList.contains('open'))
+            closeMsModal();
+    });
+}
+
+function renderTrack() {
+    const track    = document.getElementById('milestoneTrack');
+    const doneLine = document.getElementById('trackDoneLine');
+    track.querySelectorAll('.ms-item').forEach(el => el.remove());
+
+    const firstUncomp = MILESTONES.findIndex(m => !msData[m.key]?.completed);
+    const doneCount   = MILESTONES.filter(m => msData[m.key]?.completed).length;
+
+    MILESTONES.forEach((m, i) => {
+        const done    = !!msData[m.key]?.completed;
+        const current = i === firstUncomp;
+        const item = document.createElement('div');
+        item.className = 'ms-item' + (done ? ' done' : '') + (current ? ' current' : '');
+        item.innerHTML = `
+            <div class="ms-dot">${done ? '✓' : m.emoji}</div>
+            <div class="ms-label">${m.title}</div>
+        `;
+        item.addEventListener('click', () => openMsModal(m.key));
+        track.appendChild(item);
+    });
+
+    // Progress line (desktop)
+    if (doneCount === 0) {
+        doneLine.style.width = '0';
+    } else {
+        const pct = doneCount / MILESTONES.length;
+        // span from first to last dot center: each dot is flex:1, total minus padding
+        doneLine.style.width = `calc(${pct * 100}% - ${pct < 1 ? '22px' : '44px'})`;
+    }
+}
+
+function openMsModal(key) {
+    // Save previous if any
+    if (activeMsKey) saveMsFields();
+    activeMsKey = key;
+
+    const m    = MILESTONES.find(x => x.key === key);
+    const data = msData[key] || {};
+
+    document.getElementById('msEmoji').textContent = m.emoji;
+    document.getElementById('msTitle').textContent = m.title;
+    document.getElementById('msDesc').textContent  = m.desc;
+    document.getElementById('msNote').value        = data.note || '';
+    document.getElementById('msDate').value        = data.date || '';
+
+    const img = document.getElementById('msPhotoImg');
+    const ph  = document.getElementById('msPhotoPh');
+    if (data.photo) { img.src = data.photo; img.style.display = ''; ph.style.display = 'none'; }
+    else            { img.style.display = 'none'; ph.style.display = ''; }
+
+    updateMsBtn(!!data.completed);
+
+    document.getElementById('msOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function updateMsBtn(isDone) {
+    const btn = document.getElementById('msActionBtn');
+    if (isDone) { btn.textContent = 'Снять отметку'; btn.className = 'ms-action-btn done'; }
+    else        { btn.textContent = 'Отметить выполненным ✓'; btn.className = 'ms-action-btn todo'; }
+}
+
+function toggleMilestone() {
+    if (!activeMsKey) return;
+    if (!msData[activeMsKey]) msData[activeMsKey] = {};
+    const wasDone = !!msData[activeMsKey].completed;
+    msData[activeMsKey].completed = !wasDone;
+    if (!wasDone && !msData[activeMsKey].date) {
+        const today = new Date().toISOString().split('T')[0];
+        msData[activeMsKey].date = today;
+        document.getElementById('msDate').value = today;
+    }
+    saveMsFields();
+    updateMsBtn(!wasDone);
+}
+
+function saveMsFields() {
+    if (!activeMsKey) return;
+    if (!msData[activeMsKey]) msData[activeMsKey] = {};
+    msData[activeMsKey].note = document.getElementById('msNote').value;
+    msData[activeMsKey].date = document.getElementById('msDate').value;
+    lsSet('milestones', msData);
+}
+
+function closeMsModal() {
+    saveMsFields();
+    document.getElementById('msOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    renderTrack();
+}
+
+// ===== BOOKMARKS =====
+function initBookmarks() { renderBookmarks(); }
+
+function renderBookmarks() {
+    const wrap = document.getElementById('bookmarksWrap');
+    const bm   = lsGet('bookmarks');
+
+    if (!Array.isArray(bm) || bm.length === 0) {
+        wrap.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+                        <path d="M16 8C16 6.343 17.343 5 19 5H45C46.657 5 48 6.343 48 8V56L32 44L16 56V8Z"
+                              stroke="#F2D5E2" stroke-width="3" stroke-linejoin="round" fill="#FBEAF0"/>
+                    </svg>
+                </div>
+                <div class="empty-title">Здесь будут твои сохранённые материалы</div>
+                <div class="empty-hint">Нажми 🔖 на любом гайде или видео чтобы сохранить</div>
+            </div>`;
+        return;
+    }
+
+    const grid = document.createElement('div');
+    grid.className = 'bm-grid';
+
+    bm.forEach((b, i) => {
+        const card = document.createElement('div');
+        card.className = 'bm-card';
+        card.innerHTML = `
+            <button class="bm-del" title="Удалить закладку">✕</button>
+            <div class="bm-section">${b.sectionTitle || ''}</div>
+            <div class="badge ${BADGE_CLS[b.badge] || ''}">${BADGE_ICON[b.badge] || ''} ${b.label || ''}</div>
+            <div class="bm-title">${b.title}</div>
+            <div class="bm-desc">${b.desc}</div>
+            <div class="bm-footer">
+                <span class="bm-meta">${b.meta || ''}</span>
+                <button class="bm-btn">Открыть →</button>
+            </div>
+        `;
+        card.querySelector('.bm-del').addEventListener('click', e => {
+            e.stopPropagation();
+            const list = lsGet('bookmarks');
+            list.splice(i, 1);
+            lsSet('bookmarks', list);
+            renderBookmarks();
+        });
+        card.querySelector('.bm-btn').addEventListener('click', () => {
+            window.location.href = 'index.html#start';
+        });
+        grid.appendChild(card);
+    });
+
+    wrap.innerHTML = '';
+    wrap.appendChild(grid);
+}
+
+// ===== NOTES =====
+let noteTimer = null;
+
+function initNotes() {
+    const area   = document.getElementById('notesArea');
+    const status = document.getElementById('notesStatus');
+    area.value = localStorage.getItem(LS_KEY.notes) || '';
+
+    area.addEventListener('input', () => {
+        status.classList.remove('show');
+        clearTimeout(noteTimer);
+        noteTimer = setTimeout(() => {
+            localStorage.setItem(LS_KEY.notes, area.value);
+            status.classList.add('show');
+            setTimeout(() => status.classList.remove('show'), 2000);
+        }, 1000);
+    });
+}
+
+// ===== NAVBAR =====
+function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+
+    const btn  = document.getElementById('hamburger');
+    const menu = document.getElementById('mobileMenu');
+    btn.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        btn.classList.toggle('open', open);
+    });
+    menu.querySelectorAll('.nav-link').forEach(l => l.addEventListener('click', () => {
+        menu.classList.remove('open');
+        btn.classList.remove('open');
+    }));
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+    initNavbar();
+    initProfile();
+    initMilestones();
+    initBookmarks();
+    initNotes();
+});
+
+</script>
+</body>
+</html>
