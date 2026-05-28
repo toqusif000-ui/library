@@ -150,6 +150,169 @@
         .mobile-menu .nav-link { font-size: 15px; padding: 11px 16px; border-radius: var(--r-sm); }
 
 
+        /* ========== ПОИСК: кнопка в навбаре ========== */
+        .search-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 17px;
+            border-radius: 50%;
+            transition: background .2s, color .2s;
+            flex-shrink: 0;
+            color: var(--text-mid);
+        }
+
+        .search-btn:hover { background: var(--accent); color: var(--pink); }
+
+        /* ========== ПОИСК: оверлей ========== */
+        .search-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: rgba(250, 247, 244, 0.97);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 80px 24px 48px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s ease;
+            overflow-y: auto;
+        }
+
+        .search-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .search-close {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            font-size: 26px;
+            cursor: pointer;
+            color: var(--text-mid);
+            border-radius: 50%;
+            transition: background .2s, color .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .search-close:hover { background: var(--accent); color: var(--pink); }
+
+        .search-input-wrap {
+            width: 100%;
+            max-width: 720px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid var(--pink);
+            padding-bottom: 12px;
+            margin-bottom: 36px;
+        }
+
+        .search-input-icon {
+            font-size: 20px;
+            color: var(--pink);
+            flex-shrink: 0;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 22px;
+            font-family: 'Manrope', sans-serif;
+            color: var(--text);
+            outline: none;
+        }
+
+        .search-input::placeholder { color: var(--text-light); }
+
+        .search-results-wrap {
+            width: 100%;
+            max-width: 720px;
+        }
+
+        .search-empty {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 16px;
+            padding: 48px 0;
+        }
+
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 640px) {
+            .search-results-grid { grid-template-columns: 1fr; }
+            .search-overlay { padding: 70px 16px 40px; }
+        }
+
+        .search-result-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: srCardIn .25s cubic-bezier(.4,0,.2,1) forwards;
+        }
+
+        .search-result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hov);
+        }
+
+        @keyframes srCardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .sr-section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--pink);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 6px;
+        }
+
+        .sr-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 6px 0 5px;
+            line-height: 1.3;
+        }
+
+        .sr-desc {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+
         /* ========== ГЕРОЙ ========== */
         .hero {
             padding: 130px 24px 90px;
@@ -1528,6 +1691,7 @@
             <a class="nav-link" href="#instagram">Instagram</a>
             <a class="nav-link" href="#templates">Шаблоны</a>
         </div>
+        <button class="search-btn" id="searchBtn" aria-label="Поиск">🔍</button>
         <div class="hamburger" id="hamburger">
             <span></span><span></span><span></span>
         </div>
@@ -1549,6 +1713,27 @@
     <a class="nav-link" href="#documents">Документы</a>
     <a class="nav-link" href="#instagram">Instagram</a>
     <a class="nav-link" href="#templates">Шаблоны</a>
+</div>
+
+
+<!-- ========== ПОИСК: оверлей ========== -->
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-modal="true" aria-label="Поиск">
+    <button class="search-close" id="searchClose" aria-label="Закрыть поиск">×</button>
+    <div class="search-input-wrap">
+        <span class="search-input-icon">🔍</span>
+        <input
+            class="search-input"
+            id="searchInput"
+            type="text"
+            placeholder="Найти урок, гайд или тему..."
+            autocomplete="off"
+            spellcheck="false"
+        >
+    </div>
+    <div class="search-results-wrap" id="searchResultsWrap">
+        <div class="search-empty" id="searchEmpty">Начните вводить запрос</div>
+        <div class="search-results-grid" id="searchResultsGrid" style="display:none"></div>
+    </div>
 </div>
 
 
@@ -2415,6 +2600,135 @@ function renderCards(topicKey) {
 }
 
 
+// ========== ПОИСК ==========
+
+function buildSearchIndex() {
+    const index = [];
+
+    // Маппинг topicKey → sectionId из DOM (topic-item находятся внутри section[id])
+    const topicSectionMap = {};
+    document.querySelectorAll('.topic-item[data-topic]').forEach(item => {
+        const section = item.closest('section[id]');
+        topicSectionMap[item.dataset.topic] = section ? section.id : 'start';
+    });
+
+    Object.entries(TOPICS).forEach(([topicKey, topic]) => {
+        const sectionId   = topicSectionMap[topicKey] || 'start';
+        const sectionMeta = SECTIONS.find(s => s.id === sectionId);
+        const sectionName = sectionMeta ? sectionMeta.name : 'Старт';
+        topic.cards.forEach(card => {
+            index.push({ card, topicKey, sectionId, sectionName, topicTitle: topic.title });
+        });
+    });
+
+    const invMeta = SECTIONS.find(s => s.id === 'inventory');
+    INVENTORY_CARDS.forEach(card => {
+        index.push({ card, topicKey: null, sectionId: 'inventory', sectionName: invMeta ? invMeta.name : 'Инвентарь', topicTitle: 'Инвентарь' });
+    });
+
+    return index;
+}
+
+let _searchIndex = null;
+
+function openSearch() {
+    if (!_searchIndex) _searchIndex = buildSearchIndex();
+    const overlay = document.getElementById('searchOverlay');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => document.getElementById('searchInput').focus(), 50);
+}
+
+function closeSearch() {
+    const overlay = document.getElementById('searchOverlay');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    document.getElementById('searchInput').value = '';
+    renderSearchResults('');
+}
+
+function renderSearchResults(query) {
+    const grid  = document.getElementById('searchResultsGrid');
+    const empty = document.getElementById('searchEmpty');
+    const q = query.trim().toLowerCase();
+
+    if (q.length < 2) {
+        grid.style.display  = 'none';
+        empty.style.display = '';
+        empty.textContent   = 'Начните вводить запрос';
+        return;
+    }
+
+    const results = _searchIndex.filter(entry =>
+        entry.card.title.toLowerCase().includes(q) ||
+        entry.card.desc.toLowerCase().includes(q)
+    );
+
+    grid.innerHTML    = '';
+    grid.style.display = '';
+    empty.style.display = 'none';
+
+    if (results.length === 0) {
+        grid.style.display  = 'none';
+        empty.style.display = '';
+        empty.textContent   = 'Ничего не найдено по запросу «' + query.trim() + '»';
+        return;
+    }
+
+    results.forEach((entry, i) => {
+        const { card, topicKey, sectionId, sectionName } = entry;
+        const el = document.createElement('div');
+        el.className = 'search-result-card';
+        el.style.animationDelay = (i * 0.04) + 's';
+        el.innerHTML = `
+            <div class="sr-section-label">${sectionName}</div>
+            <div class="badge ${BADGE_CLS[card.badge]}" style="display:inline-flex;margin-bottom:4px">${BADGE_ICON[card.badge]} ${card.label}</div>
+            <div class="sr-title">${card.title}</div>
+            <div class="sr-desc">${card.desc}</div>
+        `;
+        el.addEventListener('click', () => handleSearchResultClick(entry));
+        grid.appendChild(el);
+    });
+}
+
+function handleSearchResultClick(entry) {
+    const { sectionId, topicKey } = entry;
+    closeSearch();
+
+    if (sectionId === 'inventory') {
+        setTimeout(openInventoryPage, 150);
+        return;
+    }
+
+    const section = document.getElementById(sectionId);
+    if (section) {
+        setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+    }
+
+    if (topicKey) {
+        renderCards(topicKey);
+        document.querySelectorAll('.topic-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.topic === topicKey);
+        });
+    }
+}
+
+function initSearch() {
+    document.getElementById('searchBtn').addEventListener('click', openSearch);
+    document.getElementById('searchClose').addEventListener('click', closeSearch);
+
+    const input = document.getElementById('searchInput');
+    input.addEventListener('input', () => {
+        if (!_searchIndex) _searchIndex = buildSearchIndex();
+        renderSearchResults(input.value);
+    });
+
+    document.getElementById('searchOverlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeSearch();
+    });
+}
+
+
 // ========== НАВБАР: скролл + активная ссылка ==========
 function initNavbar() {
     const navbar = document.getElementById('navbar');
@@ -2565,6 +2879,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSidebar();
     initInventory();
     initCalc();
+    initSearch();
 
     // Баннер — сдвигаем навбар и герой вниз на высоту баннера
     const bar = document.getElementById('announceBar');
@@ -2597,7 +2912,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('folderClose').addEventListener('click', closeFolder);
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') { closeFolder(); closeVideoPage(); closeInventoryPage(); }
+        if (e.key === 'Escape') { closeFolder(); closeVideoPage(); closeInventoryPage(); closeSearch(); }
     });
 
     // Видео-страница: кнопка «← Назад»
