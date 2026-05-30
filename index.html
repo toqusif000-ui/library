@@ -1055,6 +1055,92 @@
         .insta-link:hover { opacity: .75; }
 
 
+        /* ========== ОНБОРДИНГ ========== */
+        .onboarding-overlay {
+            position: fixed; inset: 0; z-index: 9000;
+            background: rgba(250,247,244,.88);
+            backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity .35s;
+        }
+        .onboarding-overlay.active { opacity: 1; pointer-events: all; }
+        .onboarding-box {
+            background: var(--white); border-radius: 20px;
+            padding: 44px 40px; max-width: 460px; width: 90%;
+            box-shadow: 0 20px 60px rgba(45,31,46,.14);
+            transform: translateY(22px);
+            transition: transform .35s;
+            text-align: center;
+        }
+        .onboarding-overlay.active .onboarding-box { transform: translateY(0); }
+        .onboarding-box h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 30px; font-weight: 700;
+            margin-bottom: 14px; color: var(--text);
+        }
+        .onboarding-box p {
+            font-size: 15px; color: var(--text-light);
+            line-height: 1.7; margin-bottom: 28px;
+        }
+        .onboarding-btn-main {
+            display: block; width: 100%;
+            background: var(--pink); color: var(--white);
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px; font-weight: 700;
+            padding: 15px 24px; border-radius: 12px;
+            border: none; cursor: pointer; margin-bottom: 12px;
+            transition: background .2s, transform .15s;
+            box-shadow: 0 4px 16px rgba(212,83,126,.28);
+        }
+        .onboarding-btn-main:hover { background: var(--pink-dark); transform: translateY(-1px); }
+        .onboarding-btn-text {
+            background: none; border: none;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px; color: var(--text-light);
+            cursor: pointer; padding: 6px;
+            transition: color .2s;
+        }
+        .onboarding-btn-text:hover { color: var(--pink); }
+
+        /* ========== ПРОДОЛЖИ С ТОГО МЕСТА ========== */
+        .continue-block {
+            background: var(--white);
+            border-radius: var(--r);
+            padding: 20px 28px;
+            display: flex; align-items: center; gap: 20px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+            border-left: 3px solid var(--pink);
+        }
+        .continue-icon {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; flex-shrink: 0; color: var(--pink);
+        }
+        .continue-meta { font-size: 12px; color: var(--text-light); font-weight: 500; margin-bottom: 4px; }
+        .continue-title { font-size: 16px; font-weight: 700; color: var(--text); flex: 1; }
+        .continue-btn {
+            font-family: 'Manrope', sans-serif;
+            font-size: 13px; font-weight: 600;
+            color: var(--pink); border: 1.5px solid var(--pink);
+            background: transparent; border-radius: 8px;
+            padding: 8px 16px; cursor: pointer; flex-shrink: 0;
+            transition: background .2s, color .2s;
+        }
+        .continue-btn:hover { background: var(--pink); color: var(--white); }
+
+        /* ========== ПЛАШКА НОВИНКА ========== */
+        .badge-new {
+            position: absolute; top: 10px; left: 10px;
+            background: var(--pink); color: var(--white);
+            font-size: 10px; font-weight: 700;
+            letter-spacing: .5px;
+            border-radius: 4px; padding: 2px 8px;
+            z-index: 2; pointer-events: none;
+        }
+
         /* ========== АДАПТИВ ========== */
         @media (max-width: 900px) {
             .start-layout    { grid-template-columns: 1fr; }
@@ -1934,8 +2020,19 @@
 <!-- ========== С ЧЕГО НАЧАТЬ ========== -->
 <section class="start-guide">
     <div class="container">
+
+        <!-- Блок "Продолжи с того места" -->
+        <div class="continue-block" id="continueBlock" style="display:none;">
+            <div class="continue-icon">▶</div>
+            <div style="flex:1;">
+                <div class="continue-meta">Продолжи с того места</div>
+                <div class="continue-title" id="continueTitle">Реалистичные ожидания</div>
+            </div>
+            <button class="continue-btn" id="continueBtn">Продолжить →</button>
+        </div>
+
         <div class="block-header anim">
-            <h2>Первый раз здесь?</h2>
+            <h2>С чего начать</h2>
             <p>Начни с этих трёх материалов</p>
         </div>
         <div class="start-guide-grid">
@@ -2227,6 +2324,7 @@ const TOPICS = {
         desc:  'С чего начать, что изучить в первую очередь и как не потеряться',
         cards: [
             {
+                isNew: true,
                 badge: 'guide', label: 'Гайд',
                 title: 'Кем быть кондитеру: варианты пути',
                 desc:  'Домашний кондитер, кафе, кейтеринг или собственный бренд — разбираем плюсы и минусы каждого пути.',
@@ -2334,6 +2432,7 @@ const TOPICS = {
         desc:  'Пошаговый путь от замеса теста до красивого готового изделия',
         cards: [
             {
+                isNew: true,
                 badge: 'guide', label: 'Гайд',
                 title: 'Первый торт за выходные: план действий',
                 desc:  'Простая схема: выбираем рецепт, закупаем продукты, собираем и украшаем. Никакой паники.',
@@ -2392,6 +2491,7 @@ const TOPICS = {
         desc:  'Как организовать пространство для комфортной работы дома',
         cards: [
             {
+                isNew: true,
                 badge: 'guide', label: 'Гайд',
                 title: 'Домашняя кухня как кондитерский цех',
                 desc:  'Зонирование, хранение, гигиена — как превратить обычную кухню в эффективное рабочее место.',
@@ -2724,6 +2824,16 @@ function openFolder(card) {
         document.querySelector('.folder-body').scrollTop = 0;
     }
 
+    // Сохраняем последнюю открытую карточку
+    const topic = Object.values(TOPICS).find(t => t.cards.includes(card));
+    localStorage.setItem('last_opened_card', JSON.stringify({
+        title: card.title,
+        desc: card.desc,
+        badge: card.badge,
+        sectionTitle: topic ? topic.title : ''
+    }));
+    updateContinueBlock();
+
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
 }
@@ -2754,6 +2864,7 @@ function renderCards(topicKey) {
         const saved = isBookmarked(c.title);
         const num = String(i + 1).padStart(2, '0');
         el.innerHTML = `
+            ${c.isNew ? '<div class="badge-new">НОВИНКА</div>' : ''}
             <img class="c-card-clip" src="зажим.png" alt="" draggable="false">
             <img class="c-card-photo" src="фото с рамкой.png" alt="" draggable="false">
             <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">${BOOKMARK_SVG}</button>
@@ -3061,6 +3172,7 @@ function initInventory() {
         const saved = isBookmarked(c.title);
         const num = String(i + 1).padStart(2, '0');
         el.innerHTML = `
+            ${c.isNew ? '<div class="badge-new">НОВИНКА</div>' : ''}
             <img class="c-card-clip" src="зажим.png" alt="" draggable="false">
             <img class="c-card-photo" src="фото с рамкой.png" alt="" draggable="false">
             <button class="c-bookmark-btn${saved ? ' active' : ''}" title="${saved ? 'Убрать из сохранённого' : 'Сохранить'}">${BOOKMARK_SVG}</button>
@@ -3262,6 +3374,77 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     </div>
 </div>
+
+<!-- ===== ОНБОРДИНГ МОДАЛКА ===== -->
+<div class="onboarding-overlay" id="onboardingOverlay">
+    <div class="onboarding-box">
+        <h2>Привет! Я Даша 👋</h2>
+        <p>Ты только что получила доступ к библиотеке — теперь здесь всё твоё. Советую начать с раздела Старт — он специально для тех кто только разбирается.</p>
+        <button class="onboarding-btn-main" id="onboardingStart">Начать с раздела Старт</button>
+        <button class="onboarding-btn-text" id="onboardingSkip">Посмотреть все разделы</button>
+    </div>
+</div>
+
+<script>
+/* ===== ОНБОРДИНГ ===== */
+(function() {
+    if (!localStorage.getItem('onboarding_shown')) {
+        const overlay = document.getElementById('onboardingOverlay');
+        // Небольшая задержка чтобы страница успела прогрузиться
+        setTimeout(() => overlay.classList.add('active'), 600);
+
+        document.getElementById('onboardingStart').addEventListener('click', () => {
+            overlay.classList.remove('active');
+            localStorage.setItem('onboarding_shown', 'true');
+            // Скролл к разделу Старт
+            setTimeout(() => {
+                const startSection = document.getElementById('start');
+                if (startSection) startSection.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        });
+
+        document.getElementById('onboardingSkip').addEventListener('click', () => {
+            overlay.classList.remove('active');
+            localStorage.setItem('onboarding_shown', 'true');
+        });
+    }
+})();
+
+/* ===== БЛОК "ПРОДОЛЖИ С ТОГО МЕСТА" ===== */
+function updateContinueBlock() {
+    const block = document.getElementById('continueBlock');
+    const titleEl = document.getElementById('continueTitle');
+    const btn = document.getElementById('continueBtn');
+    if (!block) return;
+
+    const saved = localStorage.getItem('last_opened_card');
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            titleEl.textContent = data.title;
+            block.style.display = 'flex';
+            btn.onclick = () => {
+                // Найти карточку и открыть
+                for (const topic of Object.values(TOPICS)) {
+                    const card = topic.cards.find(c => c.title === data.title);
+                    if (card) { openFolder(card); return; }
+                }
+            };
+        } catch(e) { block.style.display = 'none'; }
+    } else {
+        // Показываем рекомендацию раздела Старт
+        titleEl.textContent = 'Реалистичные ожидания: с чего начать';
+        block.style.display = 'flex';
+        btn.onclick = () => {
+            const card = TOPICS['basics']?.cards[0];
+            if (card) openFolder(card);
+        };
+    }
+}
+
+// Инициализация блока при загрузке
+document.addEventListener('DOMContentLoaded', updateContinueBlock);
+</script>
 
 </body>
 </html>
