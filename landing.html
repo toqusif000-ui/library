@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Библиотека кондитера — всё для начинающего кондитера</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== RESET & ПЕРЕМЕННЫЕ ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink:        #D4537E;
+      --pink-light:  #E8799E;
+      --pink-dark:   #B8426A;
+      --bg:          #FAF7F4;
+      --accent:      #FBEAF0;
+      --accent-dark: #F2D5E2;
+      --text:        #2D1F2E;
+      --text-mid:    #8B7B80;
+      --text-light:  #A08090;
+      --white:       #FFFFFF;
+      --shadow:      0 4px 24px rgba(212,83,126,.08);
+      --shadow-hov:  0 10px 36px rgba(212,83,126,.16);
+      --r:           16px;
+      --r-lg:        20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Cormorant Garamond', serif;
+      line-height: 1.15;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    /* ===== ШАПКА ===== */
+    .header {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 200;
+      background: rgba(250,247,244,.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--accent-dark);
+      box-shadow: 0 2px 16px rgba(212,83,126,.07);
+    }
+
+    .header__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--pink);
+      letter-spacing: -.3px;
+    }
+
+    .logo span { color: var(--text); font-weight: 400; }
+
+    .btn-login {
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--pink);
+      border: 1.5px solid var(--pink);
+      border-radius: 10px;
+      padding: 9px 22px;
+      background: transparent;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+
+    .btn-login:hover {
+      background: var(--pink);
+      color: var(--white);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      min-height: 100vh;
+      padding: 68px 0 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero__main {
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 72px 40px 48px;
+      display: grid;
+      grid-template-columns: 60% 40%;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero__left { display: flex; flex-direction: column; gap: 24px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--pink);
+      background: var(--accent);
+      border: 1px solid var(--accent-dark);
+      border-radius: 100px;
+      padding: 7px 16px;
+      width: fit-content;
+    }
+
+    .hero__title {
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.5px;
+    }
+
+    .hero__title em {
+      font-style: italic;
+      color: var(--pink);
+    }
+
+    .hero__subtitle {
+      font-size: 18px;
+      color: var(--text-mid);
+      font-weight: 400;
+      max-width: 520px;
+      line-height: 1.65;
+    }
+
+    .hero__cta { display: flex; flex-direction: column; gap: 10px; }
+
+    .btn-cta {
+      display: inline-block;
+      background: var(--pink);
+      color: var(--white);
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      width: fit-content;
+      box-shadow: 0 4px 20px rgba(212,83,126,.30);
+    }
+
+    .btn-cta:hover {
+      background: var(--pink-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(212,83,126,.38);
+    }
+
+    .hero__microtext {
+      font-size: 12px;
+      color: var(--text-mid);
+      font-weight: 400;
+    }
+
+    .hero__photo {
+      width: 100%;
+      max-width: 400px;
+      height: 480px;
+      background: var(--accent);
+      border: 2px dashed var(--accent-dark);
+      border-radius: var(--r-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      color: var(--pink);
+      font-size: 15px;
+      font-weight: 500;
+      justify-self: center;
+    }
+
+    .hero__photo-icon { font-size: 36px; }
+
+    /* Статистика */
+    .hero__stats {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 56px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--accent-dark);
+    }
+
+    .stat {
+      padding: 32px 24px;
+      text-align: center;
+      border-right: 1px solid var(--accent-dark);
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat__num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: var(--pink);
+      line-height: 1;
+      display: block;
+    }
+
+    .stat__label {
+      font-size: 13px;
+      color: var(--text-mid);
+      font-weight: 400;
+      margin-top: 6px;
+      display: block;
+    }
+
+    /* ===== БОЛИ ===== */
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 40px;
+    }
+
+    .section__header { text-align: center; margin-bottom: 48px; }
+
+    .section__title {
+      font-size: 44px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .section__sub {
+      font-size: 16px;
+      color: var(--text-mid);
+    }
+
+    .pains-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .pain-card {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      transition: box-shadow .25s, transform .2s;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pain-card:hover {
+      box-shadow: var(--shadow-hov);
+      transform: translateY(-3px);
+    }
+
+    .pain-card__icon {
+      font-size: 28px;
+      line-height: 1;
+    }
+
+    .pain-card__text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    /* ===== КТО ТАКАЯ ДАША ===== */
+    .about { background: var(--white); }
+
+    .about__inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .about__photo {
+      width: 100%;
+      aspect-ratio: 4/5;
+      max-height: 520px;
+      background: var(--accent);
+      border: 2px dashed var(--accent-dark);
+      border-radius: var(--r-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      color: var(--pink);
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .about__photo-icon { font-size: 36px; }
+
+    .about__content { display: flex; flex-direction: column; gap: 24px; }
+
+    .about__title {
+      font-size: 44px;
+      font-weight: 700;
+    }
+
+    .about__title em { font-style: italic; color: var(--pink); }
+
+    .about__text {
+      font-size: 16px;
+      color: var(--text-mid);
+      line-height: 1.75;
+      white-space: pre-line;
+    }
+
+    .about__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--pink);
+      background: var(--accent);
+      border: 1px solid var(--accent-dark);
+      border-radius: 100px;
+      padding: 6px 16px;
+    }
+
+    /* ===== АДАПТИВ ===== */
+    @media (max-width: 900px) {
+      .hero__main {
+        grid-template-columns: 1fr;
+        padding: 48px 24px 32px;
+        gap: 36px;
+      }
+
+      .hero__title { font-size: 38px; }
+
+      .hero__photo {
+        height: 320px;
+        max-width: 100%;
+      }
+
+      .hero__stats {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 24px 40px;
+      }
+
+      .stat { border-right: none; border-bottom: 1px solid var(--accent-dark); }
+      .stat:nth-child(odd) { border-right: 1px solid var(--accent-dark); }
+      .stat:nth-child(3), .stat:nth-child(4) { border-bottom: none; }
+
+      .section { padding: 60px 24px; }
+
+      .pains-grid { grid-template-columns: 1fr; }
+
+      .about__inner {
+        grid-template-columns: 1fr;
+        padding: 60px 24px;
+        gap: 36px;
+      }
+
+      .about__photo { aspect-ratio: 4/3; }
+
+      .section__title, .about__title { font-size: 34px; }
+    }
+
+    @media (max-width: 600px) {
+      .header__inner { padding: 0 20px; }
+      .logo { font-size: 18px; }
+      .hero__title { font-size: 32px; }
+      .hero__subtitle { font-size: 16px; }
+      .btn-cta { font-size: 15px; padding: 14px 24px; }
+      .stat__num { font-size: 34px; }
+    }
+
+    /* ===== АККОРДЕОН ===== */
+    .accordion-section { background: var(--white); }
+
+    .accordion-section .section { padding-bottom: 0; }
+
+    .accordion-hint {
+      text-align: center;
+      font-size: 14px;
+      color: var(--pink);
+      margin-top: -24px;
+      margin-bottom: 40px;
+      font-style: italic;
+    }
+
+    .accordion { border-top: 1px solid var(--accent-dark); }
+
+    .accordion-item { border-bottom: 1px solid var(--accent-dark); }
+
+    .accordion-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 0;
+      cursor: pointer;
+      user-select: none;
+      transition: color .2s;
+    }
+
+    .accordion-head:hover .accordion-name { color: var(--pink); }
+
+    .accordion-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
+
+    .accordion-name {
+      flex: 1;
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      transition: color .2s;
+    }
+
+    .accordion-count {
+      font-size: 13px;
+      color: var(--text-mid);
+      font-weight: 400;
+      flex-shrink: 0;
+    }
+
+    .accordion-arrow {
+      font-size: 18px;
+      color: var(--pink);
+      flex-shrink: 0;
+      transition: transform .3s;
+      margin-left: 12px;
+    }
+
+    .accordion-item.open .accordion-arrow { transform: rotate(180deg); }
+
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, padding .3s;
+    }
+
+    .accordion-item.open .accordion-body { max-height: 400px; }
+
+    .accordion-list {
+      list-style: none;
+      padding: 0 0 20px 34px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .accordion-list li {
+      font-size: 14px;
+      color: var(--text-mid);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .accordion-list li::before {
+      content: '—';
+      color: var(--pink);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ===== ПРЕВЬЮ КАРТОЧЕК ===== */
+    .preview-section { background: var(--bg); }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .preview-card {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: box-shadow .25s, transform .2s;
+    }
+
+    .preview-card:hover {
+      box-shadow: var(--shadow-hov);
+      transform: translateY(-3px);
+    }
+
+    .preview-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .8px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    .preview-badge.guide { background: #EAF6EE; color: #3A8C52; }
+    .preview-badge.video { background: #EAF0FB; color: #3A5FAC; }
+    .preview-badge.template { background: var(--accent); color: var(--pink); }
+
+    .preview-card__title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .preview-card__desc {
+      font-size: 14px;
+      color: var(--text-mid);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .preview-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      padding-top: 16px;
+      border-top: 1px solid var(--accent-dark);
+    }
+
+    .preview-card__meta {
+      font-size: 12px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    .preview-card__btn {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--pink);
+      background: var(--accent);
+      border: none;
+      border-radius: 8px;
+      padding: 7px 14px;
+      cursor: default;
+      opacity: .7;
+    }
+
+    .preview-more {
+      text-align: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-style: italic;
+      color: var(--pink);
+    }
+
+    /* ===== ДО / ПОСЛЕ ===== */
+    .before-after { background: var(--white); }
+
+    .ba-table {
+      border-radius: var(--r);
+      overflow: hidden;
+      border: 1px solid var(--accent-dark);
+      margin-top: 16px;
+    }
+
+    .ba-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .ba-header__cell {
+      padding: 16px 28px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    .ba-header__cell.before {
+      background: #F5F5F5;
+      color: #888;
+      border-right: 1px solid var(--accent-dark);
+    }
+
+    .ba-header__cell.after {
+      background: var(--accent);
+      color: var(--pink);
+    }
+
+    .ba-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--accent-dark);
+      transition: background .15s;
+    }
+
+    .ba-row:hover { background: #FDFAFA; }
+
+    .ba-cell {
+      padding: 18px 28px;
+      font-size: 15px;
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ba-cell.before {
+      color: var(--text-mid);
+      border-right: 1px solid var(--accent-dark);
+    }
+
+    .ba-cell.before::before {
+      content: '✗';
+      color: #C0A0A8;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .ba-cell.after { color: var(--text); font-weight: 500; }
+
+    .ba-cell.after::before {
+      content: '✓';
+      color: var(--pink);
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 900px) {
+      .preview-grid { grid-template-columns: 1fr; }
+      .ba-cell { padding: 14px 16px; font-size: 14px; }
+      .ba-header__cell { padding: 14px 16px; }
+    }
+
+    /* ===== ОТЗЫВЫ ===== */
+    .reviews-section { background: var(--bg); }
+
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .review-card {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: box-shadow .25s, transform .2s;
+    }
+
+    .review-card:hover { box-shadow: var(--shadow-hov); transform: translateY(-3px); }
+
+    .review-header { display: flex; align-items: center; gap: 14px; }
+
+    .review-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--accent-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .review-meta { display: flex; flex-direction: column; gap: 2px; }
+
+    .review-name { font-size: 15px; font-weight: 700; color: var(--text); }
+
+    .review-info { font-size: 13px; color: var(--text-mid); }
+
+    .review-stars { color: var(--pink); font-size: 15px; letter-spacing: 2px; }
+
+    .review-text { font-size: 15px; color: var(--text-mid); line-height: 1.65; flex: 1; }
+
+    .review-result {
+      font-size: 14px; font-weight: 600; color: var(--pink);
+      background: var(--accent); border-radius: 8px; padding: 10px 14px;
+    }
+
+    /* ===== ЦЕНА И ОФФЕР ===== */
+    .offer-section { background: var(--bg); }
+
+    .offer-box {
+      max-width: 720px; margin: 0 auto;
+      background: var(--white);
+      border-radius: 24px;
+      padding: 56px 48px;
+      box-shadow: 0 8px 40px rgba(212,83,126,.12);
+      text-align: center;
+    }
+
+    .offer-box h2 { font-size: 40px; font-weight: 700; margin-bottom: 16px; }
+
+    .offer-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 64px; font-weight: 700;
+      color: var(--pink); line-height: 1;
+      display: block; margin: 8px 0 6px;
+    }
+
+    .offer-subtitle { font-size: 14px; color: var(--text-mid); margin-bottom: 36px; }
+
+    .offer-list {
+      list-style: none;
+      text-align: left;
+      display: flex; flex-direction: column; gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .offer-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 15px; color: var(--text);
+    }
+
+    .offer-list li::before {
+      content: '✓'; color: var(--pink);
+      font-weight: 700; font-size: 14px;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    .offer-compare {
+      background: var(--accent);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      font-size: 15px; color: var(--text-mid);
+      line-height: 1.65; text-align: left;
+    }
+
+    .offer-compare strong { color: var(--text); }
+
+    .btn-cta-lg {
+      display: block; width: 100%;
+      background: var(--pink); color: var(--white);
+      font-family: 'Manrope', sans-serif;
+      font-size: 17px; font-weight: 700;
+      padding: 18px 32px; border-radius: 14px;
+      border: none; cursor: pointer;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(212,83,126,.30);
+      margin-bottom: 12px;
+    }
+
+    .btn-cta-lg:hover {
+      background: var(--pink-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(212,83,126,.38);
+    }
+
+    .offer-microtext { font-size: 12px; color: var(--text-mid); }
+
+    /* ===== МОДАЛЬНОЕ ОКНО ===== */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      z-index: 1000;
+      background: rgba(250,247,244,.85);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 480px; width: 90%;
+      box-shadow: 0 20px 60px rgba(45,31,46,.15);
+      transform: translateY(20px);
+      transition: transform .3s;
+      position: relative;
+    }
+
+    .modal-overlay.active .modal { transform: translateY(0); }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 20px;
+      font-size: 22px; color: var(--text-mid);
+      background: none; border: none; cursor: pointer;
+      line-height: 1; padding: 4px;
+      transition: color .2s;
+    }
+
+    .modal-close:hover { color: var(--pink); }
+
+    .modal h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px; font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px; font-weight: 700;
+      color: var(--pink); display: block;
+      margin-bottom: 24px;
+    }
+
+    .modal-input {
+      width: 100%;
+      border: 1.5px solid var(--accent-dark);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15px; color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color .2s;
+      margin-bottom: 14px;
+    }
+
+    .modal-input:focus { border-color: var(--pink); }
+    .modal-input::placeholder { color: var(--text-light); }
+
+    .modal-btn {
+      width: 100%;
+      background: var(--pink); color: var(--white);
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px; font-weight: 700;
+      padding: 16px; border-radius: 12px;
+      border: none; cursor: pointer;
+      transition: background .2s, transform .15s;
+      box-shadow: 0 4px 16px rgba(212,83,126,.28);
+      margin-bottom: 12px;
+    }
+
+    .modal-btn:hover { background: var(--pink-dark); transform: translateY(-1px); }
+
+    .modal-micro { font-size: 12px; color: var(--text-mid); text-align: center; }
+
+    /* ===== FAQ ===== */
+    .faq-section { background: var(--white); }
+
+    /* ===== ФИНАЛЬНЫЙ CTA ===== */
+    .final-cta {
+      background: var(--pink);
+      text-align: center;
+      padding: 96px 40px;
+    }
+
+    .final-cta h2 {
+      font-size: 48px; font-weight: 700;
+      color: var(--white); margin-bottom: 16px;
+    }
+
+    .final-cta p {
+      font-size: 18px;
+      color: rgba(255,255,255,.85);
+      margin-bottom: 40px;
+    }
+
+    .btn-cta-white {
+      display: inline-block;
+      background: var(--white); color: var(--pink);
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px; font-weight: 700;
+      padding: 16px 36px; border-radius: 12px;
+      border: none; cursor: pointer;
+      transition: transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,.12);
+      margin-bottom: 16px;
+    }
+
+    .btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.18); }
+
+    .final-micro { font-size: 13px; color: rgba(255,255,255,.7); }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--text);
+      color: rgba(255,255,255,.75);
+      padding: 56px 40px 32px;
+    }
+
+    .footer__inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; margin-bottom: 40px;
+    }
+
+    .footer__logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600;
+      color: var(--white); margin-bottom: 10px;
+    }
+
+    .footer__logo span { color: var(--pink-light); }
+
+    .footer__desc { font-size: 14px; line-height: 1.65; }
+
+    .footer__links { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+
+    .footer__links a {
+      font-size: 14px; color: rgba(255,255,255,.6);
+      transition: color .2s;
+    }
+
+    .footer__links a:hover { color: var(--pink-light); }
+
+    .footer__bottom {
+      max-width: 1200px; margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      font-size: 13px; color: rgba(255,255,255,.4);
+    }
+
+    /* ===== АНИМАЦИИ ПОЯВЛЕНИЯ ===== */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ===== АДАПТИВ ===== */
+    @media (max-width: 900px) {
+      .reviews-grid { grid-template-columns: 1fr; }
+      .offer-box { padding: 36px 24px; }
+      .offer-price { font-size: 48px; }
+      .final-cta { padding: 64px 24px; }
+      .final-cta h2 { font-size: 34px; }
+      .footer__inner { grid-template-columns: 1fr; gap: 32px; }
+      .footer { padding: 40px 24px 24px; }
+    }
+
+    @media (max-width: 600px) {
+      .modal { padding: 28px 20px; }
+      .final-cta h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== ШАПКА ===== -->
+  <header class="header">
+    <div class="header__inner">
+      <div class="logo">Библиотека <span>кондитера</span></div>
+      <button class="btn-login" onclick="location.href='index.html'">Войти</button>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__main">
+
+      <!-- Левая часть -->
+      <div class="hero__left">
+        <div class="badge">✦ Образовательная платформа от Даши · 5 лет опыта</div>
+
+        <h1 class="hero__title">
+          Всё что нужно начинающему кондитеру —<em> собрала в одном месте</em>
+        </h1>
+
+        <p class="hero__subtitle">
+          95 материалов: гайды, видео, шаблоны и чеклисты от практика с опытом и 10 000+ подписчиков. Один раз купила — пользуешься всегда.
+        </p>
+
+        <div class="hero__cta">
+          <button class="btn-cta">Получить доступ — 7 000 ₽</button>
+          <span class="hero__microtext">Доступ навсегда · Без подписок · Оплата через ЮКассу</span>
+        </div>
+      </div>
+
+      <!-- Правая часть — фото -->
+      <div class="hero__photo">
+        <span class="hero__photo-icon">📷</span>
+        <span>Фото Даши</span>
+      </div>
+
+    </div>
+
+    <!-- Статистика -->
+    <div class="hero__stats">
+      <div class="stat">
+        <span class="stat__num">95</span>
+        <span class="stat__label">материалов</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">13</span>
+        <span class="stat__label">разделов</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">10К</span>
+        <span class="stat__label">подписчиков</span>
+      </div>
+      <div class="stat">
+        <span class="stat__num">5 лет</span>
+        <span class="stat__label">опыта</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== БОЛИ АУДИТОРИИ ===== -->
+  <section style="background: var(--bg);">
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">Узнаёшь <em style="font-style:italic;color:var(--pink)">себя?</em></h2>
+        <p class="section__sub">Это нормально — через это проходят все. Именно для этого и создана библиотека.</p>
+      </div>
+      <div class="pains-grid">
+        <div class="pain-card">
+          <div class="pain-card__icon">🛒</div>
+          <p class="pain-card__text">«Куплю ещё один инструмент и... наверное, тогда начну»</p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-card__icon">😬</div>
+          <p class="pain-card__text">«Называю цену — и сразу стыдно. Скидываю»</p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-card__icon">💸</div>
+          <p class="pain-card__text">«Не знаю что купить в первую очередь, трачу деньги на ненужное»</p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-card__icon">🎂</div>
+          <p class="pain-card__text">«Хочу зарабатывать тортами, но не знаю как начать разговор про цену»</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== КТО ТАКАЯ ДАША ===== -->
+  <section class="about">
+    <div class="about__inner">
+
+      <!-- Фото -->
+      <div class="about__photo">
+        <span class="about__photo-icon">📷</span>
+        <span>Фото Даши</span>
+      </div>
+
+      <!-- Текст -->
+      <div class="about__content">
+        <h2 class="about__title">Привет, <em>я Даша</em></h2>
+
+        <p class="about__text">Мне было 14 когда я испекла первый торт на заказ прямо в деревне. Творожный сыр заказывали из города за 300 км. Папа купил первый шпатель, мама работала сарафанным радио. Первый заработок — 350 рублей.
+
+За 5 лет я прошла всё — от страха назвать цену до нормального дохода. Эту библиотеку я собрала чтобы ты не повторяла мои ошибки и не тратила месяцы на то что я могу объяснить за 10 минут.</p>
+
+        <div class="about__tags">
+          <span class="tag">5 лет в кондитерке</span>
+          <span class="tag">10 000 подписчиков</span>
+          <span class="tag">Волгоград</span>
+          <span class="tag">Первый торт в 14 лет</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ===== 5. ЧТО ВНУТРИ — АККОРДЕОН ===== -->
+  <section class="accordion-section">
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">95 материалов которые <em style="font-style:italic;color:var(--pink)">заменяют наставника</em></h2>
+      </div>
+      <p class="accordion-hint">Нажми на раздел чтобы посмотреть что внутри</p>
+
+      <div class="accordion">
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">✦</span>
+            <span class="accordion-name">Старт</span>
+            <span class="accordion-count">12 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Реалистичные ожидания: сколько до первого заказа</li>
+              <li>Первые 30 дней: пошаговый план</li>
+              <li>5 ошибок которые делают все новички</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">⚙</span>
+            <span class="accordion-name">Инвентарь</span>
+            <span class="accordion-count">8 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Что купить на старте до 5000₽</li>
+              <li>Что НЕ покупать на старте</li>
+              <li>Миксер и поворотный столик: как выбрать</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">❋</span>
+            <span class="accordion-name">Ингредиенты</span>
+            <span class="accordion-count">15 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Творожный сыр: какой брать и где искать</li>
+              <li>Красители: гелевые vs сухие</li>
+              <li>Где покупать выгоднее</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">◈</span>
+            <span class="accordion-name">Техники</span>
+            <span class="accordion-count">11 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Как растопить шоколад</li>
+              <li>Как взбивать сливки правильно</li>
+              <li>Темперирование: базово</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">▲</span>
+            <span class="accordion-name">Бисквиты</span>
+            <span class="accordion-count">9 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Классический бисквит: принципы</li>
+              <li>Почему бисквит оседает</li>
+              <li>Как резать коржи ровно</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">◐</span>
+            <span class="accordion-name">Кремы</span>
+            <span class="accordion-count">10 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Крем-чиз: на сливках и на масле — в чём разница</li>
+              <li>Почему крем-чиз плывёт</li>
+              <li>Ганаш: пропорции</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">▣</span>
+            <span class="accordion-name">Сборка</span>
+            <span class="accordion-count">7 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Как собирать торт в кольце</li>
+              <li>Выравнивание торта: пошагово</li>
+              <li>Подтёки: как сделать правильно</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">✿</span>
+            <span class="accordion-name">Декор</span>
+            <span class="accordion-count">6 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Работа с насадками: базовый набор</li>
+              <li>Кремовые цветы: с чего начать</li>
+              <li>Тренды декора 2025–2026</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">❄</span>
+            <span class="accordion-name">Хранение</span>
+            <span class="accordion-count">4 темы</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Сроки хранения всего: торты, кремы, коржи</li>
+              <li>Заморозка: что можно что нельзя</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">◆</span>
+            <span class="accordion-name">Цены</span>
+            <span class="accordion-count">7 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Как считать себестоимость</li>
+              <li>Как поднять цену и не потерять клиентов</li>
+              <li>Готовый прайс-лист</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">◉</span>
+            <span class="accordion-name">Клиенты</span>
+            <span class="accordion-count">9 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Как найти первых клиентов с нуля</li>
+              <li>Предоплата: как и зачем</li>
+              <li>Как отказать клиенту</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">◎</span>
+            <span class="accordion-name">Instagram</span>
+            <span class="accordion-count">8 тем</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Как упаковать профиль</li>
+              <li>Сторис которые приносят заказы</li>
+              <li>Первые 1000 подписчиков</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-icon">▦</span>
+            <span class="accordion-name">Шаблоны</span>
+            <span class="accordion-count">3 шаблона</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Анкета заказа</li>
+              <li>Договор с клиентом</li>
+              <li>Готовый прайс-лист</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /accordion -->
+    </div>
+    <div style="padding-bottom: 80px;"></div>
+  </section>
+
+  <!-- ===== 6. ПОСМОТРИ КАК УСТРОЕНА БИБЛИОТЕКА ===== -->
+  <section class="preview-section">
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">Посмотри как <em style="font-style:italic;color:var(--pink)">устроена библиотека</em></h2>
+        <p class="section__sub">Три формата материалов — каждый для своей задачи</p>
+      </div>
+
+      <div class="preview-grid">
+
+        <div class="preview-card">
+          <span class="preview-badge guide">ГАЙД</span>
+          <h3 class="preview-card__title">Почему крем-чиз плывёт</h3>
+          <p class="preview-card__desc">Разбираем все причины — температура, жирность, перебитые сливки. Каждая с решением.</p>
+          <div class="preview-card__footer">
+            <span class="preview-card__meta">8 мин читать</span>
+            <button class="preview-card__btn">Открыть →</button>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <span class="preview-badge video">ВИДЕО</span>
+          <h3 class="preview-card__title">Миксер и поворотный столик: как выбрать</h3>
+          <p class="preview-card__desc">Показываю разницу между моделями, на что смотреть при выборе, минимальный бюджет.</p>
+          <div class="preview-card__footer">
+            <span class="preview-card__meta">12 мин</span>
+            <button class="preview-card__btn">Открыть →</button>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <span class="preview-badge template">ШАБЛОН</span>
+          <h3 class="preview-card__title">Таблица расчёта себестоимости</h3>
+          <p class="preview-card__desc">Готовая таблица которую можно использовать сразу — считай реальную стоимость каждого торта.</p>
+          <div class="preview-card__footer">
+            <span class="preview-card__meta">Шаблон</span>
+            <button class="preview-card__btn">Открыть →</button>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="preview-more">и ещё 92 материала внутри...</p>
+    </div>
+  </section>
+
+  <!-- ===== 7. ДО / ПОСЛЕ ===== -->
+  <section class="before-after">
+    <div class="section">
+      <div class="section__header">
+        <h2 class="section__title">Что меняется <em style="font-style:italic;color:var(--pink)">после библиотеки</em></h2>
+      </div>
+
+      <div class="ba-table">
+        <div class="ba-header">
+          <div class="ba-header__cell before">До</div>
+          <div class="ba-header__cell after">После</div>
+        </div>
+        <div class="ba-row">
+          <div class="ba-cell before">Трачу деньги на ненужный инвентарь</div>
+          <div class="ba-cell after">Знаю точно что купить на старте</div>
+        </div>
+        <div class="ba-row">
+          <div class="ba-cell before">Боюсь называть цену — скидываю</div>
+          <div class="ba-cell after">Считаю себестоимость и называю цену уверенно</div>
+        </div>
+        <div class="ba-row">
+          <div class="ba-cell before">Не знаю как найти клиентов</div>
+          <div class="ba-cell after">Есть система от Instagram до первого заказа</div>
+        </div>
+        <div class="ba-row">
+          <div class="ba-cell before">Каждый торт — стресс и паника</div>
+          <div class="ba-cell after">Понимаю что делать на каждом этапе</div>
+        </div>
+        <div class="ba-row">
+          <div class="ba-cell before">Смотрю 100 видео и всё равно не понятно</div>
+          <div class="ba-cell after">Всё в одном месте, структурировано</div>
+        </div>
+        <div class="ba-row">
+          <div class="ba-cell before">Работаю за копейки или в минус</div>
+          <div class="ba-cell after">Знаю свою себестоимость и зарабатываю</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ===== 8. ОТЗЫВЫ ===== -->
+  <!-- Заменить на реальные отзывы -->
+  <section class="reviews-section">
+    <div class="section">
+      <div class="section__header fade-in">
+        <h2 class="section__title">Что говорят <em style="font-style:italic;color:var(--pink)">те кто уже внутри</em></h2>
+      </div>
+      <div class="reviews-grid">
+        <div class="review-card fade-in">
+          <div class="review-header">
+            <div class="review-avatar">🎂</div>
+            <div class="review-meta">
+              <span class="review-name">Маша</span>
+              <span class="review-info">19 лет · Екатеринбург</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Даже не ожидала что будет так понятно и структурировано. Перечитываю разделы по несколько раз — каждый раз нахожу что-то новое.</p>
+          <div class="review-result">💰 После раздела про цены подняла ценник в 2 раза. Клиенты не ушли</div>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-header">
+            <div class="review-avatar">🍰</div>
+            <div class="review-meta">
+              <span class="review-name">Аня</span>
+              <span class="review-info">24 года · Москва</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Я полгода смотрела ролики на YouTube и так ничего и не понимала. Здесь за неделю разобралась с себестоимостью и наконец-то взяла первый заказ.</p>
+          <div class="review-result">📦 Первый заказ через 10 дней после покупки</div>
+        </div>
+        <div class="review-card fade-in">
+          <div class="review-header">
+            <div class="review-avatar">🌸</div>
+            <div class="review-meta">
+              <span class="review-name">Оля</span>
+              <span class="review-info">31 год · Краснодар</span>
+            </div>
+          </div>
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">Раздел про инвентарь сэкономил мне кучу денег — я уже хотела купить кучу ненужного. Теперь знаю точно что брать в первую очередь.</p>
+          <div class="review-result">🛒 Сэкономила 8 000 ₽ на старте</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 9. ЦЕНА И ОФФЕР ===== -->
+  <section class="offer-section">
+    <div class="section">
+      <div class="offer-box fade-in">
+        <h2>Получи доступ к <em style="font-style:italic;color:var(--pink)">библиотеке</em></h2>
+        <span class="offer-price">7 000 ₽</span>
+        <p class="offer-subtitle">Доступ навсегда · Без подписок · Обновления включены</p>
+
+        <ul class="offer-list">
+          <li>95 материалов: гайды, видео, шаблоны и чеклисты</li>
+          <li>13 разделов от старта до Instagram</li>
+          <li>Поиск по всей библиотеке</li>
+          <li>Личный кабинет с закладками и заметками</li>
+          <li>Путь кондитера с чекпоинтами</li>
+          <li>Все новые материалы бесплатно навсегда</li>
+        </ul>
+
+        <div class="offer-compare">
+          <strong>Курсы кондитеров стоят 30 000–50 000 ₽</strong><br>
+          Здесь всё то же самое — без воды, без дедлайнов, навсегда.
+        </div>
+
+        <button class="btn-cta-lg" onclick="openModal()">Получить доступ</button>
+        <p class="offer-microtext">Оплата через ЮКассу · Доступ сразу после оплаты</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 11. FAQ ===== -->
+  <section class="faq-section">
+    <div class="section">
+      <div class="section__header fade-in">
+        <h2 class="section__title">Частые <em style="font-style:italic;color:var(--pink)">вопросы</em></h2>
+      </div>
+      <div class="accordion fade-in">
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-name">Доступ действительно навсегда?</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Да. Один раз оплатила — пользуешься всегда. Никаких подписок и повторных платежей.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-name">Подойдёт если я совсем новичок и никогда не пекла?</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Именно для тебя. Библиотека начинается с раздела «Старт» — там всё с нуля, без лишних слов.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-name">Когда получу доступ после оплаты?</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Сразу. После оплаты на твой email придёт письмо с кодом входа — это займёт меньше минуты.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-name">Будут ли добавляться новые материалы?</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Да, библиотека живая — новые гайды и видео добавляются регулярно. Все обновления включены в твой доступ бесплатно.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-name">Есть ли возврат если не понравится?</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Напиши в Instagram @dari_tart — разберёмся.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <div class="accordion-head" onclick="toggleAccordion(this)">
+            <span class="accordion-name">Чем это отличается от курсов?</span>
+            <span class="accordion-arrow">↓</span>
+          </div>
+          <div class="accordion-body">
+            <ul class="accordion-list">
+              <li>Курс — это поток с дедлайнами и домашними заданиями. Библиотека — это инструмент к которому возвращаешься когда нужно. Изучаешь в своём темпе, возвращаешься к нужному разделу в любой момент.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 12. ФИНАЛЬНЫЙ CTA ===== -->
+  <section class="final-cta">
+    <h2>Начни свой путь в кондитерке <em style="font-style:italic">сегодня</em></h2>
+    <p>95 материалов ждут тебя. Доступ навсегда.</p>
+    <button class="btn-cta-white" onclick="openModal()">Получить доступ — 7 000 ₽</button>
+    <p class="final-micro">Доступ навсегда · Без подписок · Оплата через ЮКассу</p>
+  </section>
+
+  <!-- ===== 13. FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div>
+        <div class="footer__logo">Библиотека <span>кондитера</span></div>
+        <p class="footer__desc">Образовательная платформа для начинающих кондитеров.<br>Всё что нужно — собрано в одном месте.</p>
+      </div>
+      <div class="footer__links">
+        <a href="#">Политика конфиденциальности</a>
+        <a href="#">Договор оферты</a>
+        <a href="index.html">Войти</a>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      © 2026 Библиотека кондитера · ИП/Самозанятый [имя]
+    </div>
+  </footer>
+
+  <!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
+  <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h3>Получить доступ к библиотеке</h3>
+      <span class="modal-price">7 000 ₽</span>
+      <input class="modal-input" type="email" placeholder="Введи свой email" id="modalEmail">
+      <button class="modal-btn">Оплатить 7 000 ₽</button>
+      <p class="modal-micro">На этот email придёт ссылка для входа</p>
+    </div>
+  </div>
+
+  <script>
+    /* ===== АККОРДЕОН ===== */
+    function toggleAccordion(head) {
+      const item = head.closest('.accordion-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.accordion-item.open').forEach(el => el.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
+
+    /* ===== МОДАЛКА ===== */
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    /* ===== АНИМАЦИИ ПОЯВЛЕНИЯ ===== */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* ===== NAVBAR SCROLL ===== */
+    window.addEventListener('scroll', () => {
+      document.querySelector('.header').style.boxShadow =
+        window.scrollY > 10 ? '0 2px 20px rgba(212,83,126,.12)' : '0 2px 16px rgba(212,83,126,.07)';
+    });
+  </script>
+
+</body>
+</html>
