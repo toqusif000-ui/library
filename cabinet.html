@@ -298,6 +298,67 @@
         }
         .notes-status { font-size: 12px; color: var(--text-light); margin-top: 8px; height: 18px; opacity: 0; transition: opacity .3s; }
         .notes-status.show { opacity: 1; }
+
+        /* ================================================
+           ПОЛНОЦЕННАЯ МОБИЛЬНАЯ АДАПТАЦИЯ — 480px / 400px
+           ================================================ */
+
+        /* touch-targets */
+        .save-btn, .ms-action-btn, .bm-btn { min-height: 44px; }
+
+        @media (max-width: 480px) {
+
+          /* --- Профиль --- */
+          .profile-section { padding: 24px 16px; }
+          .profile-block   {
+            padding: 24px 20px 20px;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            text-align: center;
+          }
+          .profile-info    { min-width: unset; width: 100%; text-align: left; }
+          .pf-display.large{ font-size: 24px; }
+          .pf-display.mid  { font-size: 15px; }
+          .pf-label        { font-size: 10px; }
+          .save-btn        { padding: 9px 20px; font-size: 13px; }
+
+          /* --- Секции кабинета --- */
+          .cab-section     { padding: 36px 0; }
+          .container       { padding: 0 16px; }
+          .sec-title       { font-size: 26px; }
+          .sec-sub         { font-size: 14px; margin-bottom: 20px; }
+
+          /* --- Путь кондитера --- */
+          .track           { padding: 0 0 0 16px; }
+          .ms-dot,
+          .ms-item.done .ms-dot,
+          .ms-item.current .ms-dot { width: 40px; height: 40px; font-size: 16px; }
+          .ms-label        { font-size: 13px; }
+          .ms-item         { gap: 12px; }
+
+          /* --- Модалка milestone --- */
+          .ms-modal        { padding: 28px 20px 32px; border-radius: 20px; }
+          .ms-modal-emoji  { font-size: 36px; }
+          .ms-modal-title  { font-size: 24px; }
+          .ms-modal-desc   { font-size: 13px; }
+          .ms-photo-area   { padding: 16px; }
+          .ms-action-btn   { padding: 14px; font-size: 14px; border-radius: 20px; }
+
+          /* --- Закладки --- */
+          .bm-card         { padding: 18px; }
+          .bm-title        { font-size: 15px; }
+          .bm-desc         { font-size: 12px; }
+          .bm-btn          { font-size: 12px; padding: 6px 12px; }
+
+          /* --- Заметки --- */
+          .notes-area      { padding: 18px 16px; font-size: 14px; min-height: 180px; }
+        }
+
+        @media (max-width: 400px) {
+          .pf-display.large { font-size: 22px; }
+          .sec-title        { font-size: 24px; }
+        }
     </style>
 </head>
 <body>

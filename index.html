@@ -2059,6 +2059,110 @@
             .vp-body { padding: 36px 16px 60px; }
         }
 
+        /* ================================================
+           ПОЛНОЦЕННАЯ МОБИЛЬНАЯ АДАПТАЦИЯ — 540px / 400px
+           ================================================ */
+
+        /* touch-targets */
+        .c-btn, .btn, .btn-pink, .btn-outline-white { min-height: 44px; }
+
+        @media (max-width: 540px) {
+
+          /* --- Баннер-анонс --- */
+          .announce-bar  { padding: 8px 44px 8px 16px; font-size: 12px; line-height: 1.4; }
+
+          /* --- Hero (welcome-bar) --- */
+          .home-wrap     { padding-top: 110px; }
+          .welcome-bar   { border-radius: 16px; min-height: unset; }
+          .hero-content-col { padding: 24px 20px 28px; }
+          .hero-heading-main,
+          .hero-heading-accent { font-size: 30px; }
+          .hero-desc     { font-size: 14px; line-height: 1.65; margin-bottom: 16px; }
+          .hero-stats-label { font-size: 12px; margin-bottom: 10px; }
+          .hero-stats    { gap: 8px; }
+          .hero-stat-num { font-size: 28px; }
+          .hero-stat-sub { font-size: 11px; }
+          .hero-coming   { gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+          .hero-coming-tag { font-size: 12px; padding: 5px 12px; }
+
+          /* --- Сетка разделов --- */
+          .sections-block { padding: 48px 16px; }
+          .block-header   { margin-bottom: 32px; }
+          .block-header p { font-size: 14px; }
+
+          /* --- Открытый раздел --- */
+          .open-section  { padding: 44px 16px; }
+          .breadcrumb    { font-size: 12px; margin-bottom: 20px; }
+          .sidebar-head  { font-size: 18px; padding-bottom: 12px; }
+
+          /* --- Боковое меню тем: горизонтальный скролл --- */
+          .topic-list {
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding-bottom: 6px;
+            gap: 6px;
+            margin-bottom: 24px;
+          }
+          .topic-list::-webkit-scrollbar { display: none; }
+          .topic-item    { flex-shrink: 0; font-size: 13px; padding: 8px 14px; }
+
+          /* --- Контент-область --- */
+          .content-head h2 { font-size: 26px; }
+          .content-head p  { font-size: 14px; }
+          .content-grid    { padding-top: 28px; }
+
+          /* --- Карточка контента --- */
+          .c-card        { padding: 20px !important; }
+          .c-title       { font-size: 15px; }
+          .c-desc        { font-size: 13px; }
+
+          /* --- «С чего начать» --- */
+          .start-guide   { padding: 48px 16px; }
+          .sg-card       { padding: 24px 20px; }
+          .sg-card h3    { font-size: 20px; }
+          .sg-num        { font-size: 48px; }
+
+          /* --- «Скоро в библиотеке» --- */
+          .new-in-lib    { padding: 48px 16px; }
+          .nil-card      { padding: 18px 16px; border-radius: 14px; }
+          .nil-title     { font-size: 15px; }
+          .nil-progress-block { padding: 0; }
+
+          /* --- Бонусы --- */
+          .bonuses       { padding: 48px 16px; }
+          .b-card h3     { font-size: 22px; }
+          .calc-row label { font-size: 13px; min-width: 100px; }
+          .calc-val      { font-size: 24px; }
+          .sheets-grid   { grid-template-columns: 1fr; }
+          .sheet-item    { font-size: 14px; }
+
+          /* --- Папка-модалка --- */
+          .folder-overlay { padding: 0 0; }
+          .folder-wrap   { height: 95vh; }
+          .folder-body   { padding: 20px 16px 48px; }
+          .folder-tab    { padding: 10px 16px 14px; }
+          .folder-content h2 { font-size: 24px; }
+          .folder-content h3 { font-size: 19px; }
+
+          /* --- Поиск --- */
+          .search-overlay { padding: 60px 16px 40px; }
+          .search-input  { font-size: 18px; }
+
+          /* --- Футер --- */
+          .footer-grid   { padding: 32px 16px 24px; }
+          .footer-bottom { flex-direction: column; gap: 8px; font-size: 12px; text-align: center; }
+        }
+
+        @media (max-width: 400px) {
+          .hero-heading-main,
+          .hero-heading-accent { font-size: 26px; }
+          .hero-stat-num { font-size: 24px; }
+          .sections-grid { grid-template-columns: 1fr; }
+          .home-wrap     { padding-top: 120px; }
+        }
 
         /* ========== PDF-РЕЖИМ (картинка) ========== */
         .folder-overlay.pdf-mode .folder-wrap {
