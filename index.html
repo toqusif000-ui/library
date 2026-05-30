@@ -1846,6 +1846,35 @@
         #inventoryPage::-webkit-scrollbar { width: 5px; }
         #inventoryPage::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 4px; }
 
+        /* ===== СТРАНИЦА ГАЙДА ===== */
+        #guidePage {
+            position: fixed;
+            inset: 0;
+            z-index: 350;
+            background: var(--bg);
+            transform: translateX(100%);
+            transition: transform 0.35s ease-in-out;
+            will-change: transform;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-dark) transparent;
+        }
+        #guidePage.open { transform: translateX(0); }
+        #guidePage::-webkit-scrollbar { width: 5px; }
+        #guidePage::-webkit-scrollbar-thumb { background: var(--accent-dark); border-radius: 4px; }
+
+        .gp-image-wrap {
+            max-width: 680px;
+            margin: 0 auto 36px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        .gp-image-wrap img {
+            width: 100%;
+            display: block;
+        }
+
         .vp-header {
             position: sticky;
             top: 0;
@@ -2555,6 +2584,12 @@ const TOPICS = {
                 desc:  'Простая схема: выбираем рецепт, закупаем продукты, собираем и украшаем. Никакой паники.',
                 meta:  '15 мин чтения',
                 pdf:   'Шоколад.pdf',
+                points: [
+                    'Как распланировать два дня чтобы ничего не горело',
+                    'Что приготовить в субботу, что оставить на воскресенье',
+                    'Какой рецепт выбрать для первого раза',
+                    'Как не облажаться с кремом и сборкой',
+                ],
                 body: `
                     <h2>Первый торт за выходные: план действий</h2>
                     <div class="g-meta"><span>📖 Гайд</span><span>⏱ 15 мин чтения</span><span>✦ Старт → Первый торт</span></div>
@@ -2835,6 +2870,12 @@ const INVENTORY_CARDS = [
         desc:  'Полный список с объяснением зачем каждый инструмент. Весы, формы, шпатели, скребки, термометр — каждый пункт с коротким объяснением',
         meta:  '8 мин читать',
         pdf: 'kosmo',
+        points: [
+            'Какие инструменты реально нужны с первого дня',
+            'На чём можно сэкономить без потери качества',
+            'Что купить в первую очередь, а что подождёт',
+            'Итоговый список на 5000 ₽ с ценами',
+        ],
     },
     {
         badge: 'guide', label: 'Гайд',
@@ -2912,6 +2953,7 @@ function renderSections() {
 
 // ========== ПАПКА-МОДАЛКА: открыть / закрыть ==========
 function openFolder(card) {
+    if (card.badge === 'guide') { openGuidePage(card); return; }
     const overlay  = document.getElementById('folderOverlay');
     const tabBadge = document.getElementById('folderTabBadge');
     const tabTitle = document.getElementById('folderTabTitle');
@@ -3257,6 +3299,50 @@ function closeInventoryPage() {
 }
 
 
+// ========== ГАЙД-СТРАНИЦА: открыть / закрыть ==========
+function openGuidePage(card) {
+    const gp = document.getElementById('guidePage');
+    const mw = document.getElementById('mainWrap');
+
+    document.getElementById('gpTitle').textContent = card.title;
+
+    const chips = document.getElementById('gpChips');
+    chips.innerHTML = `<span class="vp-chip"><span class="vp-chip-icon">📖</span> ${card.meta || 'Гайд'}</span>`;
+
+    const imgWrap = document.getElementById('gpImage');
+    if (card.pdf) {
+        const imgSrc = card.pdf === 'kosmo' ? KOSMO_IMG : SHOLAD_IMG;
+        imgWrap.innerHTML = `<img src="${imgSrc}" alt="${card.title}">`;
+        imgWrap.style.display = 'block';
+    } else {
+        imgWrap.innerHTML = '';
+        imgWrap.style.display = 'none';
+    }
+
+    const pointsSection = document.getElementById('gpPointsSection');
+    const pointsList = document.getElementById('gpPoints');
+    const points = card.points || [];
+    if (points.length > 0) {
+        pointsList.innerHTML = points.map(p => `<li>${p}</li>`).join('');
+        pointsSection.style.display = 'block';
+    } else {
+        pointsSection.style.display = 'none';
+    }
+
+    gp.scrollTop = 0;
+    gp.classList.add('open');
+    mw.classList.add('slide-left');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeGuidePage() {
+    const gp = document.getElementById('guidePage');
+    const mw = document.getElementById('mainWrap');
+    gp.classList.remove('open');
+    mw.classList.remove('slide-left');
+    document.body.style.overflow = '';
+}
+
 // ========== ВИДЕО-СТРАНИЦА: открыть / закрыть ==========
 function openVideoPage() {
     const vp = document.getElementById('videoPage');
@@ -3468,6 +3554,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 <!-- ========== ВИДЕО-СТРАНИЦА ========== -->
+<div id="guidePage">
+    <div class="vp-header">
+        <button class="vp-back" id="gpBack">← Назад</button>
+        <div class="vp-header-crumb">
+            <span>Библиотека</span>
+            <span>→</span>
+            <span class="cur">Гайд</span>
+        </div>
+    </div>
+    <div class="vp-body">
+        <h1 class="vp-title" id="gpTitle"></h1>
+        <div class="vp-chips" id="gpChips"></div>
+        <div class="gp-image-wrap" id="gpImage"></div>
+        <div id="gpPointsSection">
+            <h2 class="vp-h2">В этом гайде вы узнаете</h2>
+            <ul class="vp-points" id="gpPoints"></ul>
+        </div>
+    </div>
+</div>
+
 <div id="videoPage">
     <div class="vp-header">
         <button class="vp-back" id="vpBack">← Назад</button>
@@ -3562,6 +3668,7 @@ function initWelcome() {
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
     initWelcome();
+    document.getElementById('gpBack').addEventListener('click', closeGuidePage);
 });
 </script>
 
