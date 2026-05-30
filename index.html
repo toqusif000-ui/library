@@ -3329,6 +3329,15 @@ function openGuidePage(card) {
         pointsSection.style.display = 'none';
     }
 
+    const dlBtn = document.getElementById('gpDownload');
+    if (card.pdf && card.pdf !== 'kosmo') {
+        dlBtn.href = card.pdf;
+        dlBtn.download = card.pdf;
+        dlBtn.style.display = 'inline-flex';
+    } else {
+        dlBtn.style.display = 'none';
+    }
+
     gp.scrollTop = 0;
     gp.classList.add('open');
     mw.classList.add('slide-left');
@@ -3571,6 +3580,16 @@ document.addEventListener('DOMContentLoaded', () => {
             <h2 class="vp-h2">В этом гайде вы узнаете</h2>
             <ul class="vp-points" id="gpPoints"></ul>
         </div>
+        <a id="gpDownload" href="#" download style="display:none;
+            display:inline-flex; align-items:center; gap:8px;
+            margin-top:32px; padding:14px 28px;
+            background:var(--pink); color:#fff;
+            font-family:'Manrope',sans-serif; font-size:14px; font-weight:600;
+            border-radius:12px; text-decoration:none;
+            box-shadow:0 4px 16px rgba(212,83,126,.28);
+            transition:background .2s, transform .15s;">
+            ⬇ Скачать PDF
+        </a>
     </div>
 </div>
 
