@@ -1058,12 +1058,16 @@
         /* ========== ГЛАВНАЯ: ОБЁРТКА ========== */
         .home-wrap {
             max-width: 1200px;
-            margin: 24px auto 0;
-            padding: 0 24px;
+            margin: 0 auto;
+            padding: 100px 24px 0; /* 100px = navbar + announce bar */
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
+
+        /* open-section скрыты по умолчанию */
+        .open-section { display: none; }
+        .open-section.visible { display: block; }
 
         /* 1. Приветственная шапка */
         .welcome-bar {
@@ -2108,7 +2112,7 @@
 <div class="home-wrap">
 
     <!-- 1. Приветствие -->
-    <div class="welcome-bar fade-in">
+    <div class="welcome-bar">
         <div class="welcome-left">
             <div class="welcome-title" id="welcomeTitle">С возвращением! 👋</div>
             <div class="welcome-sub">Библиотека пополняется каждую неделю</div>
@@ -2860,7 +2864,13 @@ function renderSections() {
                 openInventoryPage();
             } else {
                 const anchor = SECTION_ANCHORS[s.id] || 'start';
-                document.getElementById(anchor).scrollIntoView({ behavior: 'smooth' });
+                const section = document.getElementById(anchor);
+                if (section) {
+                    // Показываем секцию если она скрыта
+                    document.querySelectorAll('.open-section').forEach(sec => sec.classList.remove('visible'));
+                    section.classList.add('visible');
+                    setTimeout(() => section.scrollIntoView({ behavior: 'smooth' }), 50);
+                }
             }
         });
         grid.appendChild(el);
@@ -3110,6 +3120,8 @@ function handleSearchResultClick(entry) {
 
     const section = document.getElementById(sectionId);
     if (section) {
+        document.querySelectorAll('.open-section').forEach(sec => sec.classList.remove('visible'));
+        section.classList.add('visible');
         setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
     }
 
@@ -3324,13 +3336,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Баннер — сдвигаем навбар и герой вниз на высоту баннера
     const bar = document.getElementById('announceBar');
     const nav = document.getElementById('navbar');
+    const homeWrap = document.querySelector('.home-wrap');
+
+    function updateHomeWrapPadding() {
+        const navH = nav ? nav.offsetHeight : 68;
+        const barH = (bar && bar.style.display !== 'none') ? bar.offsetHeight : 0;
+        if (homeWrap) homeWrap.style.paddingTop = (navH + barH + 16) + 'px';
+    }
+
     if (bar) {
         const h = bar.offsetHeight;
         nav.style.top = h + 'px';
+        updateHomeWrapPadding();
         document.getElementById('announceClose').addEventListener('click', () => {
             bar.style.display = 'none';
             nav.style.top = '0';
+            updateHomeWrapPadding();
         });
+    } else {
+        updateHomeWrapPadding();
     }
 
     // Прогресс-бар «Новое в библиотеке» — анимируем при появлении
@@ -3475,10 +3499,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('onboardingStart').addEventListener('click', () => {
             overlay.classList.remove('active');
             localStorage.setItem('onboarding_shown', 'true');
-            // Скролл к разделу Старт
             setTimeout(() => {
                 const startSection = document.getElementById('start');
-                if (startSection) startSection.scrollIntoView({ behavior: 'smooth' });
+                if (startSection) {
+                    document.querySelectorAll('.open-section').forEach(s => s.classList.remove('visible'));
+                    startSection.classList.add('visible');
+                    startSection.scrollIntoView({ behavior: 'smooth' });
+                }
             }, 300);
         });
 
