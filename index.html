@@ -1055,12 +1055,17 @@
         .insta-link:hover { opacity: .75; }
 
 
-        /* ========== ПРИВЕТСТВЕННАЯ ШАПКА ========== */
-        .welcome-wrap {
+        /* ========== ГЛАВНАЯ: ОБЁРТКА ========== */
+        .home-wrap {
             max-width: 1200px;
             margin: 24px auto 0;
             padding: 0 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
+
+        /* 1. Приветственная шапка */
         .welcome-bar {
             background: var(--white);
             border-radius: var(--r);
@@ -1095,45 +1100,13 @@
             flex-shrink: 0;
         }
 
-        /* ========== HOME SECTIONS ========== */
-        .home-section-wrap {
-            max-width: 1200px;
-            margin: 20px auto 0;
-            padding: 0 24px;
-        }
-        .home-section-inner {
+        /* 2. Продолжи с того места */
+        .continue-bar {
             background: var(--white);
             border-radius: var(--r);
-            padding: 28px 32px;
+            padding: 24px 32px;
             box-shadow: var(--shadow);
         }
-        .home-section-label {
-            font-size: 12px;
-            font-weight: 600;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 14px;
-        }
-        .home-section-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .home-section-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .home-section-sub {
-            font-size: 13px;
-            color: var(--text-light);
-            margin-top: 4px;
-        }
-
-        /* Карточка "Продолжи" */
         .continue-card {
             display: flex;
             align-items: center;
@@ -1142,6 +1115,7 @@
             border-radius: 12px;
             padding: 16px 20px;
             border: 1px solid var(--accent-dark);
+            margin-top: 12px;
         }
         .continue-icon {
             width: 44px; height: 44px;
@@ -1170,6 +1144,28 @@
             transition: background .2s, color .2s;
         }
         .continue-btn:hover { background: var(--pink); color: var(--white); }
+
+        /* 3. Новое в библиотеке */
+        .new-cards-bar {
+            background: var(--white);
+            border-radius: var(--r);
+            padding: 28px 32px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Общие метки секций */
+        .home-section-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .8px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+        .home-section-sub {
+            font-size: 13px;
+            color: var(--text-light);
+        }
 
         /* ========== ОНБОРДИНГ ========== */
         .onboarding-overlay {
@@ -1259,12 +1255,12 @@
 
         /* ========== АДАПТИВ ========== */
         @media (max-width: 768px) {
-            .welcome-wrap, .home-section-wrap { padding: 0 16px; }
-            .welcome-bar { padding: 18px 20px; flex-wrap: wrap; }
+            .home-wrap { padding: 0 16px; gap: 12px; margin-top: 16px; }
+            .welcome-bar { padding: 18px 20px; flex-wrap: wrap; gap: 12px; }
             .welcome-title { font-size: 22px; }
-            .home-section-inner { padding: 20px 20px; }
+            .continue-bar, .new-cards-bar { padding: 20px; }
             .continue-card { flex-wrap: wrap; gap: 12px; }
-            .continue-title { font-size: 14px; }
+            .continue-title { white-space: normal; font-size: 14px; }
             .continue-btn { width: 100%; text-align: center; }
         }
         @media (max-width: 900px) {
@@ -2108,9 +2104,10 @@
 </div>
 
 
-<!-- ========== ГЕРОЙ ========== -->
-<!-- ========== ПРИВЕТСТВЕННАЯ ШАПКА ========== -->
-<div class="welcome-wrap">
+<!-- ========== ГЛАВНАЯ: ПРИВЕТСТВЕННАЯ ШАПКА ========== -->
+<div class="home-wrap">
+
+    <!-- 1. Приветствие -->
     <div class="welcome-bar fade-in">
         <div class="welcome-left">
             <div class="welcome-title" id="welcomeTitle">С возвращением! 👋</div>
@@ -2118,13 +2115,11 @@
         </div>
         <div class="welcome-date" id="welcomeDate"></div>
     </div>
-</div>
 
-<!-- ========== ПРОДОЛЖИ С ТОГО МЕСТА ========== -->
-<div class="home-section-wrap" id="continueWrap" style="display:none;">
-    <div class="home-section-inner fade-in">
+    <!-- 2. Продолжи с того места (скрыт по умолчанию) -->
+    <div class="continue-bar" id="continueWrap" style="display:none;">
         <div class="home-section-label">Продолжи с того места</div>
-        <div class="continue-card" id="continueCard">
+        <div class="continue-card">
             <div class="continue-icon">▶</div>
             <div class="continue-info">
                 <div class="continue-title" id="continueTitle">—</div>
@@ -2133,20 +2128,15 @@
             <button class="continue-btn" id="continueBtn">Продолжить →</button>
         </div>
     </div>
-</div>
 
-<!-- ========== НОВОЕ В БИБЛИОТЕКЕ ========== -->
-<div class="home-section-wrap" id="newCardsWrap">
-    <div class="home-section-inner fade-in">
-        <div class="home-section-header">
-            <div>
-                <div class="home-section-title">Новое в библиотеке</div>
-                <div class="home-section-sub">Библиотека пополняется каждую неделю</div>
-            </div>
-        </div>
+    <!-- 3. Новое в библиотеке -->
+    <div class="new-cards-bar" id="newCardsWrap">
+        <div class="home-section-label">Новое в библиотеке</div>
+        <p class="home-section-sub" style="margin-bottom:20px;">Свежие материалы — добавляем каждую неделю</p>
         <div class="c-grid" id="newCardsGrid"></div>
     </div>
-</div>
+
+</div><!-- /home-wrap -->
 
 <div class="divider"></div>
 
