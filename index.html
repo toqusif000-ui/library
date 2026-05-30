@@ -1177,26 +1177,6 @@
         /* 2. Продолжи с того места */
 
         /* 3. Новое в библиотеке */
-        .new-cards-bar {
-            background: var(--white);
-            border-radius: var(--r);
-            padding: 28px 32px;
-            box-shadow: var(--shadow);
-        }
-
-        /* Общие метки секций */
-        .home-section-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .8px;
-            text-transform: uppercase;
-            color: var(--text-light);
-            margin-bottom: 4px;
-        }
-        .home-section-sub {
-            font-size: 13px;
-            color: var(--text-light);
-        }
 
         /* ========== ОНБОРДИНГ ========== */
         .onboarding-overlay {
@@ -2187,12 +2167,6 @@
     </div>
 
 
-    <!-- 3. Новое в библиотеке -->
-    <div class="new-cards-bar" id="newCardsWrap">
-        <div class="home-section-label">Новое в библиотеке</div>
-        <p class="home-section-sub" style="margin-bottom:20px;">Свежие материалы — добавляем каждую неделю</p>
-        <div class="c-grid" id="newCardsGrid"></div>
-    </div>
 
 </div><!-- /home-wrap -->
 
@@ -3584,56 +3558,10 @@ function initWelcome() {
 }
 
 
-/* ===== БЛОК "НОВОЕ В БИБЛИОТЕКЕ" ===== */
-function renderNewCards() {
-    const grid = document.getElementById('newCardsGrid');
-    const wrap = document.getElementById('newCardsWrap');
-    if (!grid) return;
-    const newCards = [];
-    for (const topic of Object.values(TOPICS)) {
-        for (const card of topic.cards) {
-            if (card.isNew) newCards.push({ ...card, _topicTitle: topic.title });
-            if (newCards.length >= 4) break;
-        }
-        if (newCards.length >= 4) break;
-    }
-    if (newCards.length === 0) { wrap.style.display = 'none'; return; }
-    grid.innerHTML = '';
-    newCards.forEach((c, i) => {
-        const el = document.createElement('div');
-        el.className = 'c-card anim';
-        el.style.transitionDelay = (i * 0.07) + 's';
-        const saved = isBookmarked(c.title);
-        el.innerHTML = `
-            <div class="badge-new">НОВИНКА</div>
-            <button class="c-bookmark-btn${saved ? ' active' : ''}" title="Сохранить">${BOOKMARK_SVG}</button>
-            <div class="badge ${BADGE_CLS[c.badge]}">${BADGE_ICON[c.badge]} ${c.label}</div>
-            <div class="c-title">${c.title}</div>
-            <div class="c-desc">${c.desc}</div>
-            <div class="c-footer">
-                <span class="c-meta">${c.meta}</span>
-                <button class="c-btn">Открыть →</button>
-            </div>
-        `;
-        el.querySelector('.c-btn').addEventListener('click', () => openFolder(c));
-        el.addEventListener('click', e => {
-            if (!e.target.classList.contains('c-btn') && !e.target.closest('.c-bookmark-btn')) openFolder(c);
-        });
-        el.querySelector('.c-bookmark-btn').addEventListener('click', e => {
-            handleBookmarkClick(e,
-                { title: c.title, desc: c.desc, badge: c.badge, label: c.label, meta: c.meta, sectionTitle: c._topicTitle },
-                el.querySelector('.c-bookmark-btn')
-            );
-        });
-        grid.appendChild(el);
-        requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in')));
-    });
-}
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
     initWelcome();
-    renderNewCards();
 });
 </script>
 

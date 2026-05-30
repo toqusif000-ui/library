@@ -184,17 +184,7 @@
       width: 100%;
       max-width: 400px;
       height: 480px;
-      background: var(--accent);
-      border: 2px dashed var(--accent-dark);
       border-radius: var(--r-lg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 10px;
-      color: var(--pink);
-      font-size: 15px;
-      font-weight: 500;
       justify-self: center;
     }
 
@@ -309,17 +299,7 @@
       width: 100%;
       aspect-ratio: 4/5;
       max-height: 520px;
-      background: var(--accent);
-      border: 2px dashed var(--accent-dark);
       border-radius: var(--r-lg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 10px;
-      color: var(--pink);
-      font-size: 15px;
-      font-weight: 500;
     }
 
     .about__photo-icon { font-size: 36px; }
@@ -965,6 +945,64 @@
       .modal { padding: 28px 20px; }
       .final-cta h2 { font-size: 28px; }
     }
+
+    /* ===== СЕТКА РАЗДЕЛОВ (как в главной) ===== */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+    }
+    .sec-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 28px 24px;
+      min-height: 180px;
+      border: 1.5px solid transparent;
+      box-shadow: 0 4px 24px rgba(212,83,126,.08);
+      display: flex;
+      flex-direction: column;
+      transition: transform .3s, box-shadow .3s, border-color .3s;
+    }
+    .sec-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(212,83,126,.12);
+      border-color: #F2D5E2;
+    }
+    .sec-icon {
+      width: 56px; height: 56px;
+      background: #FBEAF0;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: #D4537E;
+      flex-shrink: 0;
+      transition: background .25s, color .25s;
+    }
+    .sec-card:hover .sec-icon { background: #D4537E; color: #fff; }
+    .sec-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 500;
+      color: #2D1F2E;
+      margin-top: 16px;
+    }
+    .sec-desc {
+      font-size: 13px; color: #8B7B80;
+      margin-top: 6px; line-height: 1.5;
+      flex: 1;
+    }
+    .sec-tag {
+      display: inline-flex;
+      font-size: 12px; font-weight: 600;
+      color: #D4537E; background: #FBEAF0;
+      padding: 3px 10px; border-radius: 20px;
+      margin-top: 14px; align-self: flex-start;
+    }
+    @media (max-width: 768px) {
+      .sections-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .sections-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -986,11 +1024,11 @@
         <div class="badge">✦ Образовательная платформа от Даши · 5 лет опыта</div>
 
         <h1 class="hero__title">
-          Всё что нужно начинающему кондитеру —<em> собрала в одном месте</em>
+          Библиотека<br><em>кондитера</em>
         </h1>
 
         <p class="hero__subtitle">
-          95 материалов: гайды, видео, шаблоны и чеклисты от практика с опытом и 10 000+ подписчиков. Один раз купила — пользуешься всегда.
+          95 материалов — гайды, видео, шаблоны и чеклисты по всему что нужно начинающему кондитеру. От первого торта до первых клиентов — всё в одном месте, навсегда.
         </p>
 
         <div class="hero__cta">
@@ -1001,8 +1039,6 @@
 
       <!-- Правая часть — фото -->
       <div class="hero__photo">
-        <span class="hero__photo-icon">📷</span>
-        <span>Фото Даши</span>
       </div>
 
     </div>
@@ -1032,8 +1068,8 @@
   <section style="background: var(--bg);">
     <div class="section">
       <div class="section__header">
-        <h2 class="section__title">Узнаёшь <em style="font-style:italic;color:var(--pink)">себя?</em></h2>
-        <p class="section__sub">Это нормально — через это проходят все. Именно для этого и создана библиотека.</p>
+        <h2 class="section__title">Каждый кондитер начинает с одних и тех же <em style="font-style:italic;color:var(--pink)">вопросов</em></h2>
+        <p class="section__sub">Неважно из какого ты города и сколько тебе лет — в начале пути все сталкиваются с одним и тем же</p>
       </div>
       <div class="pains-grid">
         <div class="pain-card">
@@ -1062,23 +1098,24 @@
 
       <!-- Фото -->
       <div class="about__photo">
-        <span class="about__photo-icon">📷</span>
-        <span>Фото Даши</span>
       </div>
 
       <!-- Текст -->
       <div class="about__content">
-        <h2 class="about__title">Привет, <em>я Даша</em></h2>
+        <div class="badge">✦ Как появилась библиотека</div>
+        <h2 class="about__title">Я прошла через <em>всё это сама</em></h2>
 
-        <p class="about__text">Мне было 14 когда я испекла первый торт на заказ прямо в деревне. Творожный сыр заказывали из города за 300 км. Папа купил первый шпатель, мама работала сарафанным радио. Первый заработок — 350 рублей.
+        <p class="about__text">Мне было 14 когда я испекла первый торт на заказ в деревне. Творожный сыр заказывали из города за 300 км. Я не знала как считать себестоимость, боялась называть цену и тратила деньги на ненужный инвентарь.
 
-За 5 лет я прошла всё — от страха назвать цену до нормального дохода. Эту библиотеку я собрала чтобы ты не повторяла мои ошибки и не тратила месяцы на то что я могу объяснить за 10 минут.</p>
+За 5 лет я нашла ответы на все эти вопросы — через ошибки, практику и сотни часов работы.
+
+Библиотека кондитера — это всё что я хотела бы иметь когда начинала. Собрано в одном месте, без воды и без лишних трат.</p>
 
         <div class="about__tags">
           <span class="tag">5 лет в кондитерке</span>
           <span class="tag">10 000 подписчиков</span>
-          <span class="tag">Волгоград</span>
           <span class="tag">Первый торт в 14 лет</span>
+          <span class="tag">Волгоград</span>
         </div>
       </div>
 
@@ -1092,218 +1129,101 @@
       <div class="section__header">
         <h2 class="section__title">95 материалов которые <em style="font-style:italic;color:var(--pink)">заменяют наставника</em></h2>
       </div>
-      <p class="accordion-hint">Нажми на раздел чтобы посмотреть что внутри</p>
 
-      <div class="accordion">
+      <div class="sections-grid">
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">✦</span>
-            <span class="accordion-name">Старт</span>
-            <span class="accordion-count">12 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Реалистичные ожидания: сколько до первого заказа</li>
-              <li>Первые 30 дней: пошаговый план</li>
-              <li>5 ошибок которые делают все новички</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">✦</div>
+          <div class="sec-name">Старт</div>
+          <div class="sec-desc">Реалистичные ожидания, первые 30 дней и ошибки которых стоит избежать</div>
+          <span class="sec-tag">12 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">⚙</span>
-            <span class="accordion-name">Инвентарь</span>
-            <span class="accordion-count">8 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Что купить на старте до 5000₽</li>
-              <li>Что НЕ покупать на старте</li>
-              <li>Миксер и поворотный столик: как выбрать</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">⚙</div>
+          <div class="sec-name">Инвентарь</div>
+          <div class="sec-desc">Что купить на старте, что не покупать и как выбрать миксер</div>
+          <span class="sec-tag">8 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">❋</span>
-            <span class="accordion-name">Ингредиенты</span>
-            <span class="accordion-count">15 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Творожный сыр: какой брать и где искать</li>
-              <li>Красители: гелевые vs сухие</li>
-              <li>Где покупать выгоднее</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">❋</div>
+          <div class="sec-name">Ингредиенты</div>
+          <div class="sec-desc">Творожный сыр, красители, где покупать выгоднее</div>
+          <span class="sec-tag">15 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">◈</span>
-            <span class="accordion-name">Техники</span>
-            <span class="accordion-count">11 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Как растопить шоколад</li>
-              <li>Как взбивать сливки правильно</li>
-              <li>Темперирование: базово</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">◈</div>
+          <div class="sec-name">Техники</div>
+          <div class="sec-desc">Растопить шоколад, взбить сливки, темперирование — базово</div>
+          <span class="sec-tag">11 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">▲</span>
-            <span class="accordion-name">Бисквиты</span>
-            <span class="accordion-count">9 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Классический бисквит: принципы</li>
-              <li>Почему бисквит оседает</li>
-              <li>Как резать коржи ровно</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">▲</div>
+          <div class="sec-name">Бисквиты</div>
+          <div class="sec-desc">Классика, почему оседает, как резать коржи ровно</div>
+          <span class="sec-tag">9 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">◐</span>
-            <span class="accordion-name">Кремы</span>
-            <span class="accordion-count">10 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Крем-чиз: на сливках и на масле — в чём разница</li>
-              <li>Почему крем-чиз плывёт</li>
-              <li>Ганаш: пропорции</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">◐</div>
+          <div class="sec-name">Кремы</div>
+          <div class="sec-desc">Крем-чиз, ганаш, почему плывёт и как это исправить</div>
+          <span class="sec-tag">10 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">▣</span>
-            <span class="accordion-name">Сборка</span>
-            <span class="accordion-count">7 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Как собирать торт в кольце</li>
-              <li>Выравнивание торта: пошагово</li>
-              <li>Подтёки: как сделать правильно</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">▣</div>
+          <div class="sec-name">Сборка</div>
+          <div class="sec-desc">Торт в кольце, выравнивание, подтёки — пошагово</div>
+          <span class="sec-tag">7 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">✿</span>
-            <span class="accordion-name">Декор</span>
-            <span class="accordion-count">6 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Работа с насадками: базовый набор</li>
-              <li>Кремовые цветы: с чего начать</li>
-              <li>Тренды декора 2025–2026</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">✿</div>
+          <div class="sec-name">Декор</div>
+          <div class="sec-desc">Насадки, кремовые цветы, тренды декора 2025–2026</div>
+          <span class="sec-tag">6 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">❄</span>
-            <span class="accordion-name">Хранение</span>
-            <span class="accordion-count">4 темы</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Сроки хранения всего: торты, кремы, коржи</li>
-              <li>Заморозка: что можно что нельзя</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">❄</div>
+          <div class="sec-name">Хранение</div>
+          <div class="sec-desc">Сроки хранения, заморозка — что можно, что нельзя</div>
+          <span class="sec-tag">4 темы</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">◆</span>
-            <span class="accordion-name">Цены</span>
-            <span class="accordion-count">7 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Как считать себестоимость</li>
-              <li>Как поднять цену и не потерять клиентов</li>
-              <li>Готовый прайс-лист</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">◆</div>
+          <div class="sec-name">Цены</div>
+          <div class="sec-desc">Себестоимость, как поднять цену и готовый прайс-лист</div>
+          <span class="sec-tag">7 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">◉</span>
-            <span class="accordion-name">Клиенты</span>
-            <span class="accordion-count">9 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Как найти первых клиентов с нуля</li>
-              <li>Предоплата: как и зачем</li>
-              <li>Как отказать клиенту</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">◉</div>
+          <div class="sec-name">Клиенты</div>
+          <div class="sec-desc">Первые клиенты, предоплата, как грамотно отказать</div>
+          <span class="sec-tag">9 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">◎</span>
-            <span class="accordion-name">Instagram</span>
-            <span class="accordion-count">8 тем</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Как упаковать профиль</li>
-              <li>Сторис которые приносят заказы</li>
-              <li>Первые 1000 подписчиков</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">◎</div>
+          <div class="sec-name">Instagram</div>
+          <div class="sec-desc">Профиль, сторис которые приносят заказы, первые 1000 подписчиков</div>
+          <span class="sec-tag">8 тем</span>
         </div>
 
-        <div class="accordion-item">
-          <div class="accordion-head" onclick="toggleAccordion(this)">
-            <span class="accordion-icon">▦</span>
-            <span class="accordion-name">Шаблоны</span>
-            <span class="accordion-count">3 шаблона</span>
-            <span class="accordion-arrow">↓</span>
-          </div>
-          <div class="accordion-body">
-            <ul class="accordion-list">
-              <li>Анкета заказа</li>
-              <li>Договор с клиентом</li>
-              <li>Готовый прайс-лист</li>
-            </ul>
-          </div>
+        <div class="sec-card">
+          <div class="sec-icon">▦</div>
+          <div class="sec-name">Шаблоны</div>
+          <div class="sec-desc">Анкета заказа, договор с клиентом, готовый прайс-лист</div>
+          <span class="sec-tag">3 шаблона</span>
         </div>
 
-      </div><!-- /accordion -->
+      </div><!-- /sections-grid -->
     </div>
     <div style="padding-bottom: 80px;"></div>
   </section>
